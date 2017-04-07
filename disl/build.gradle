@@ -52,7 +52,9 @@ artifacts {
 }
 
 signing {
-    sign configurations.archives
+    if (!version.endsWith("SNAPSHOT")) {
+        sign configurations.archives
+    }
 }
 
 uploadArchives {
