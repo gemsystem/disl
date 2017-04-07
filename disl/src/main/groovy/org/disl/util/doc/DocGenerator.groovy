@@ -77,7 +77,7 @@ class DocGenerator {
 
 	public void generate() {
 		clean()
-		org.codehaus.groovy.runtime.NullObject.metaClass.toString = {return ''}
+		org.codehaus.groovy.runtime.NullObject.getMetaClass().toString = {return ''}
 		metaManager.process({generate(it)})
 		generatePackages()
 		generateLineage()

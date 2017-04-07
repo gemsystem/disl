@@ -143,7 +143,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	void initSourceAlias(String property) {
-		MetaProperty metaProperty=metaClass.getProperties().find {it.name==property}
+		MetaProperty metaProperty=getMetaClass().getProperties().find {it.name==property}
 		MappingSource p=(MappingSource)MetaFactory.create(metaProperty.getType())
 		p.sourceAlias=property
 		this[property]=p

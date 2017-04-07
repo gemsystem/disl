@@ -70,11 +70,11 @@ abstract class Base implements Comparable<Base> {
 	}
 	
 	public List getPropertyValuesByType(Class type) {
-		return metaClass.properties.findAll({type.isAssignableFrom(it.type)}).collect({this.getProperty(it.name)});
+		return getMetaClass().properties.findAll({type.isAssignableFrom(it.type)}).collect({this.getProperty(it.name)});
 	}
 	
 	public List<String> getPropertyNamesByType(Class type) {
-		return metaClass.properties.findAll({type.isAssignableFrom(it.type)}).collect({it.name});
+		return getMetaClass().properties.findAll({type.isAssignableFrom(it.type)}).collect({it.name});
 	}
 	
 	@Override
