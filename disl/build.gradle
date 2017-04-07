@@ -1,26 +1,7 @@
-/*
- * Copyright 2015 Karel Hübl <karel.huebl@gmail.com>.
- *
- * This file is part of disl.
- *
- * Disl is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Disl is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
- */
+plugins {
+    id "com.github.hierynomus.license" version "0.11.0"
+}
 
- plugins {
-	 id "com.github.hierynomus.license" version "0.11.0"
- }
- 
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
 apply plugin: 'java-library-distribution'
@@ -28,9 +9,8 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 
-project.group='com.github.kaja78'
-//project.version="${getVersionName()}"
-project.version="0.4.2-SNAPSHOT"
+project.group = 'com.github.gemsystem'
+project.version = "1.0.0-SNAPSHOT"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -38,88 +18,84 @@ targetCompatibility = 1.7
 repositories { mavenCentral() }
 
 dependencies {
-	compile 'org.codehaus.groovy:groovy-all:2.3.10'
-	compile 'org.slf4j:slf4j-api:1.7.21'
-	compile 'junit:junit:4.12'
-	testCompile 'org.hsqldb:hsqldb:2.3.2'
-	testRuntime 'org.slf4j:slf4j-simple:1.7.21'
-	testRuntime fileTree(dir: 'lib', include: '*.jar')
+    compile 'org.codehaus.groovy:groovy-all:2.3.10'
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'junit:junit:4.12'
+    testCompile 'org.hsqldb:hsqldb:2.3.2'
+    testRuntime 'org.slf4j:slf4j-simple:1.7.21'
+    testRuntime fileTree(dir: 'lib', include: '*.jar')
 }
 
-license { 
-	header rootProject.file('HEADER.txt')
-	ext.year = Calendar.getInstance().get(Calendar.YEAR)
-	skipExistingHeaders = true
+license {
+    header rootProject.file('HEADER.txt')
+    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    skipExistingHeaders = true
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier 'sources'
-	from sourceSets.main.allSource
+    classifier 'sources'
+    from sourceSets.main.allSource
 }
 
 groovydoc {
-	//exclude files causing groovydoc to fail
-	exclude 'org/disl/db/oracle/OracleReverseEngineeringService.groovy'
+    //exclude files causing groovydoc to fail
+    exclude 'org/disl/db/oracle/OracleReverseEngineeringService.groovy'
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
-	classifier = 'javadoc'
-	from groovydoc
+    classifier = 'javadoc'
+    from groovydoc
 }
- 
+
 artifacts {
-	archives groovydocJar, sourcesJar
+    archives groovydocJar, sourcesJar
 }
 
 signing {
-	sign configurations.archives
-}
-
-String getVersionName() {
-	'git describe --tags'.execute(null,project.projectDir).text.trim()
+    sign configurations.archives
 }
 
 uploadArchives {
-	repositories {
-		mavenDeployer {
-			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-				authentication(userName: sonatypeUser, password: sonatypePassword)
-			}
-			
-			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-				authentication(userName: sonatypeUser, password: sonatypePassword)
-			}
-		
-			pom.project {
-				name 'disl'
-				description 'disl = data integration specific language. Goal of this project is to implement groovy based domain specific language supporting modelling of data integration projects. Disl will support data modeling and data mapping including support for MDA transformations and unit testing.'
-				url 'https://github.com/kaja78/disl'
-				licenses {
-					license {
-						name 'GNU GENERAL PUBLIC LICENSE, Version 3.0'
-						url 'http://www.gnu.org/licenses/gpl.txt'
-						distribution 'repo'
-					}
-				}
-				developers {
-					developer {
-						name 'Karel Hübl'
-						email 'karel.huebl@gmail.com'
-						organization 'Karel Hübl'
-						organizationUrl 'https://github.com/kaja78'						
-					}
-				}
-				issueManagement {
-					system 'Github'
-					url 'https://github.com/kaja78/disl/issues'					
-				}
-				scm {
-					connection 'scm:git:git@github.com:kaja78/disl.git'
-					developerConnection 'scm:git:git@github.com:kaja78/disl.git'
-					url 'git:git@github.com:kaja78/disl.git'
-				}
-			}
-		}
-	}
+    repositories {
+        //set gemMavenUserPublish and gemMavenPasswordPublish in ~/.gradle/gradle.properties
+        mavenDeployer {
+            snapshotRepository(url: "http://maven.gem.local/nexus/content/repositories/snapshots/") {
+                authentication(userName: gemMavenUserPublish, password: gemMavenPasswordPublish)
+            }
+
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            repository(url: "http://maven.gem.local/nexus/content/repositories/public/") {
+                authentication(userName: gemMavenUserPublish, password: gemMavenPasswordPublish)
+            }
+            pom.project {
+                name 'disl'
+                description 'disl = data integration specific language. Goal of this project is to implement groovy based domain specific language supporting modelling of data integration projects. Disl will support data modeling and data mapping including support for MDA transformations and unit testing.'
+                url 'https://github.com/gemsystem/disl'
+                licenses {
+                    license {
+                        name 'GNU GENERAL PUBLIC LICENSE, Version 3.0'
+                        url 'http://www.gnu.org/licenses/gpl.txt'
+                        distribution 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        name 'GEM System a.s.'
+                        email 'sales@gemsystem.cz'
+                        organization 'GEM System a.s.'
+                        organizationUrl 'https://github.com/gemsystem'
+                    }
+                }
+                issueManagement {
+                    system 'Github'
+                    url 'https://github.com/gemsystem/disl/issues'
+                }
+                scm {
+                    connection 'scm:git:git@github.com:gemsystem/disl.git'
+                    developerConnection 'scm:git:git@github.com:gemsystem/disl.git'
+                    url 'git:git@github.com:gemsystem/disl.git'
+                }
+            }
+        }
+    }
 }
