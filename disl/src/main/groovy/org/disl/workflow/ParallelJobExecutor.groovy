@@ -33,64 +33,78 @@ import groovy.util.logging.Slf4j;
 @Slf4j
 @Singleton(lazy=true,strict=false)
 class ParallelJobExecutor {
-	int parallelJobsInProgress=0
 
-	private ExecutorService executorService
-	private ExecutorService parallelJobExecutorService
-	
-	private synchronized ExecutorService getParallelJobExecutorService() {
-		if (parallelJobExecutorService==null) {
-			parallelJobExecutorService=Executors.newCachedThreadPool()
-		}
-		return parallelJobExecutorService
-	}
-	
-	private synchronized ExecutorService getExecutorService() {
-		if (executorService==null) {
-			executorService=Executors.newFixedThreadPool(Integer.parseInt(Context.getContextProperty("disl.parallelExecutorThreads", "4")))
-		}
-		return executorService
-	}
-	
+	ParallelJobExecutorWorker parallelJobExecutorWorker = new ParallelJobExecutorWorker()
+
 	/**
 	 * Execute Job's jobEntries in parallel.
 	 * */
 	void execute(Job job) {
-		def parallelFutures=submitParallelJobTasks(job.getJobEntries())
-		def futures=submitTasks(job.getJobEntries())	
-		try {
-			checkResults(parallelFutures)
-			checkResults(futures)
-		} catch (Exception e) {
-			throw new RuntimeException("Exception in asynchronous execution.",e)
-		} finally {
-			releaseParallelJob()
+		parallelJobExecutorWorker.execute(job)
+	}
+
+	@Slf4j
+	static class ParallelJobExecutorWorker {
+		int parallelJobsInProgress=0
+
+		private ExecutorService executorService
+		private ExecutorService parallelJobExecutorService
+
+		protected static volatile parallelJobExecutor = null;
+
+		private synchronized ExecutorService getParallelJobExecutorService() {
+			if (parallelJobExecutorService==null) {
+				parallelJobExecutorService=Executors.newCachedThreadPool()
+			}
+			return parallelJobExecutorService
 		}
-	}
-	
-	synchronized void releaseParallelJob() {
-		parallelJobsInProgress--
-		if (parallelJobsInProgress==0) {
-			shutdownExecutors()
+
+		synchronized ExecutorService getExecutorService() {
+			if (executorService==null) {
+				executorService=Executors.newFixedThreadPool(Integer.parseInt(Context.getContextProperty("disl.parallelExecutorThreads", "4")))
+			}
+			return executorService
 		}
-	}
-	
-	List<Future> submitParallelJobTasks(Collection<Executable> executables) {
-		Collection<Callable> parallelJobTasks=executables.findAll({isParallelJobEntry(it)}).collect({createCallable(it)})
-		synchronized (this) {
-			parallelJobsInProgress++
+
+		/**
+		 * Execute Job's jobEntries in parallel.
+		 * */
+		void execute(Job job) {
+			def parallelFutures=submitParallelJobTasks(job.getJobEntries())
+			def futures=submitTasks(job.getJobEntries())
+			try {
+				checkResults(parallelFutures)
+				checkResults(futures)
+			} catch (Exception e) {
+				throw new RuntimeException("Exception in asynchronous execution.",e)
+			} finally {
+				releaseParallelJob()
+			}
 		}
-		def service=getParallelJobExecutorService()
-		return parallelJobTasks.collect({service.submit(it)})
-	}
-	
-	protected List<Future> submitTasks(Collection<Executable> executables) {
-		Collection<Callable> tasks=executables.findAll({!isParallelJobEntry(it)}).collect({createCallable(it)})
-		def service=getExecutorService()
-		return tasks.collect({service.submit(it)})		
-	}
-	
-	protected void shutdownExecutors() {
+
+		synchronized void releaseParallelJob() {
+			parallelJobsInProgress--
+			if (parallelJobsInProgress==0) {
+				shutdownExecutors()
+			}
+		}
+
+		List<Future> submitParallelJobTasks(Collection<Executable> executables) {
+			Collection<Callable> parallelJobTasks=executables.findAll({isParallelJobEntry(it)}).collect({createCallable(it)})
+			synchronized (this) {
+				parallelJobsInProgress++
+			}
+			def service=getParallelJobExecutorService()
+			return parallelJobTasks.collect({service.submit(it)})
+		}
+
+		protected List<Future> submitTasks(Collection<Executable> executables) {
+			Collection<Callable> tasks=executables.findAll({!isParallelJobEntry(it)}).collect({createCallable(it)})
+			def service=getExecutorService()
+			return tasks.collect({service.submit(it)})
+		}
+
+		protected void shutdownExecutors() {
 			if (executorService!=null) {
 				executorService.shutdown()
 				executorService=null
@@ -99,31 +113,35 @@ class ParallelJobExecutor {
 				parallelJobExecutorService.shutdown()
 				parallelJobExecutorService=null
 			}
-	}
-	
-	protected boolean isParallelJobEntry(JobEntry jobEntry) {
-		return (jobEntry.executable instanceof ParallelJob)
-	}
-	
-	/**
-	 * Check result of Executable execution. The result should be null. However Exception is thrown if execution failed.
-	 * */
-	protected void checkResults(List<Future> futures) {
-		futures.each({it.get()})
-	}
-	
-	protected Callable createCallable(Executable executable) {
-		Context parentContext=Context.getContext()
-		return new Callable() {
-			Object call() {
-				try {
-					Context.init(parentContext)
-					executable.execute();
-				} catch (Exception e) {
-					throw e;
+		}
+
+		protected boolean isParallelJobEntry(JobEntry jobEntry) {
+			return (jobEntry.executable instanceof ParallelJob)
+		}
+
+		/**
+		 * Check result of Executable execution. The result should be null. However Exception is thrown if execution failed.
+		 * */
+		protected void checkResults(List<Future> futures) {
+			futures.each({it.get()})
+		}
+
+		protected Callable createCallable(Executable executable, int jobSleepTime=0) {
+			Context parentContext=Context.getContext()
+			return new Callable() {
+				Object call() {
+					try {
+						Context.init(parentContext)
+						executable.execute();
+						if(jobSleepTime>0) {
+							sleep(jobSleepTime)
+						}
+					} catch (Exception e) {
+						throw e;
+					}
 				}
 			}
 		}
-	}
 
+	}
 }
