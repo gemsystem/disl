@@ -48,7 +48,11 @@ abstract class AbstractExecutable extends Base implements Executable {
 			executionInfo.processedRows=executeInternal()
 			executionInfo.finish()
 		} catch (Exception e) {
-			executionInfo.error(e)
+			if (!isIgnoreErrors()) {
+				executionInfo.error(e)
+			} else {
+				executionInfo.ignoreError(e)
+			}
 			handleException(e)		
 		} finally {
 			postExecute()

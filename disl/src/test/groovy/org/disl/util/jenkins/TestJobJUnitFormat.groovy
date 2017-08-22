@@ -44,9 +44,10 @@ class TestJobJUnitFormat extends DislTestCase {
             job.execute()
         } catch (Exception e) {}
         //Set duration to expected value.
-        setDuration(job.executionInfo,3000)
+        setDuration(job.executionInfo,5000)
         setDuration(job.jobEntries[0].executionInfo,2000)
-        setDuration(job.jobEntries[1].executionInfo,1000)
+        setDuration(job.jobEntries[1].executionInfo,2000)
+        setDuration(job.jobEntries[2].executionInfo,1000)
         job.jobEntries.each {
             it.executable.steps.each {
                 ExecutionInfo executionInfo=it.executionInfo
@@ -83,17 +84,25 @@ class TestJobJUnitFormat extends DislTestCase {
 *********************************************************************************************
 *  Name                                              *   Status   *  Time (ms)*        Rows *
 *********************************************************************************************
-* SampleJob                                          *      ERROR *       3000 *          0 *
+* SampleJob                                          *      ERROR *       5000 *          0 *
 *********************************************************************************************
 * SampleExecutable1                                  *   FINISHED *       2000 *          2 *
-* SampleExecutable2                                  *      ERROR *       1000 *          0 *
+* SampleExecutable2                                  *   FINISHED *       2000 *          1 *
+* SampleExecutable3                                  *      ERROR *       1000 *          0 *
 *********************************************************************************************
 ]]></system-out></testcase>
 \t<testcase name="1_Step1" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.1_SampleExecutable1" time="1"><system-out><![CDATA[Step1 code.]]></system-out></testcase>
 \t<testcase name="2_Step2" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.1_SampleExecutable1" time="1"><system-out><![CDATA[Step2 code.]]></system-out></testcase>
-\t<testcase name="1_Step1" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.2_SampleExecutable2" time="1"><system-out><![CDATA[Step1 code.]]></system-out><system-err><![CDATA[java.lang.RuntimeException: Testing exception.\r
+\t<testcase name="1_Step1" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.2_SampleExecutable2" time="1"><system-out><![CDATA[Step1 code.
+IGNORING ERROR:
+Testing exception.
+
+java.lang.RuntimeException: Testing exception.\r
+\tat SampleClass.sampleMehtod(SampleClass.groovy:10)]]></system-out><skipped/></testcase>
+\t<testcase name="2_Step2" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.2_SampleExecutable2" time="1"><system-out><![CDATA[Step2 code.]]></system-out></testcase>
+\t<testcase name="1_Step1" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.3_SampleExecutable3" time="1"><system-out><![CDATA[Step1 code.]]></system-out><system-err><![CDATA[java.lang.RuntimeException: Testing exception.\r
 \tat SampleClass.sampleMehtod(SampleClass.groovy:10)]]></system-err><failure message="Testing exception."></failure></testcase>
-\t<testcase name="2_Step2" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.2_SampleExecutable2" time="0"><system-out><![CDATA[Step2 code.]]></system-out><skipped/></testcase>
+\t<testcase name="2_Step2" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.3_SampleExecutable3" time="0"><system-out><![CDATA[Step2 code.]]></system-out><skipped/></testcase>
 </testsuite>"""
        String result=new JobJUnitFormat(job: job).format()
        Assert.assertEquals(expected,result)
@@ -141,6 +150,14 @@ class TestJobJUnitFormat extends DislTestCase {
     static class SampleExecutable2 extends Pattern {
         @Override
         void init() {
+            add(new Step1(fail:true,ignoreErrors:true))
+            add(Step2)
+        }
+    }
+
+    static class SampleExecutable3 extends Pattern {
+        @Override
+        void init() {
             add(new Step1(fail:true))
             add(Step2)
         }
@@ -150,6 +167,7 @@ class TestJobJUnitFormat extends DislTestCase {
         SampleJob() {
             addType SampleExecutable1
             addType SampleExecutable2
+            addType SampleExecutable3
         }
     }
 }
