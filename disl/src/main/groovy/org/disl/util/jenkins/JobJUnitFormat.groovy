@@ -116,7 +116,7 @@ class JobJUnitFormat {
     protected String formatStatus(ExecutionInfo executionInfo) {
         Status status=executionInfo.getStatus()
         if (status==Status.ERROR) {
-            return """${formatStackTrace(executionInfo)}<failure message="${getRootCause(executionInfo.exception).getMessage()}"></failure>"""
+            return """${formatStackTrace(executionInfo)}<failure message="${getRootCause(executionInfo.exception).getMessage().replace("\"","&quot;")}"></failure>"""
         } else if (status==Status.FINISHED) {
             return ''
         } else {
