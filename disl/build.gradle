@@ -10,7 +10,7 @@ apply plugin: 'signing'
 
 
 project.group = 'com.github.gemsystem'
-project.version = "1.0.1-SNAPSHOT"
+project.version = "1.0.3-SNAPSHOT"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -65,7 +65,7 @@ uploadArchives {
                 authentication(userName: gemMavenUserPublish, password: gemMavenPasswordPublish)
             }
 
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            //beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
             repository(url: "http://maven.gem.local/nexus/content/repositories/public/") {
                 authentication(userName: gemMavenUserPublish, password: gemMavenPasswordPublish)
             }

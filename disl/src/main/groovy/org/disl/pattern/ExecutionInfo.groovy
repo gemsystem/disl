@@ -77,6 +77,12 @@ class ExecutionInfo {
 		status=Status.ERROR
 		exception=e
 	}
+
+	void ignoreError(Exception e) {
+		endTime=System.currentTimeMillis()
+		status=Status.IGNORE_ERROR
+		exception=e
+	}
 }
 
 

@@ -62,7 +62,7 @@ class JobJUnitFormat {
     }
 
     protected String formatSummary() {
-        """\t<testcase name="executionSummary" classname="${job.class.name}.!Summary" time="0">${formatCode(job.getExecutionSummaryMessage())}</testcase>\n"""
+        """\t<testcase name="executionSummary" classname="${job.class.name}.!Summary" time="0">${formatCode(job.getExecutionSummaryMessage(),null)}</testcase>\n"""
     }
 
     protected String format(Mapping mapping) {
@@ -94,20 +94,29 @@ class JobJUnitFormat {
 
 
     protected String format(String name, String parentName, ExecutionInfo executionInfo, String code=null) {
-        """\t<testcase name="${name}" classname="${parentName}" time="${formatTime(executionInfo)}">${formatCode(code)}${formatStatus(executionInfo)}</testcase>\n"""
+        """\t<testcase name="${name}" classname="${parentName}" time="${formatTime(executionInfo)}">${formatCode(code,executionInfo)}${formatStatus(executionInfo)}</testcase>\n"""
     }
 
-    protected String formatCode(String code) {
+    protected String formatCode(String code, ExecutionInfo executionInfo) {
         if (code) {
-            return "<system-out><![CDATA[${code}]]></system-out>"
+            return "<system-out><![CDATA[${code}${formatStatusIgnoreErrors(executionInfo)}]]></system-out>"
         }
         return ''
+    }
+
+    protected String formatStatusIgnoreErrors(ExecutionInfo executionInfo) {
+        Status status=executionInfo?.getStatus()
+        if (status==Status.IGNORE_ERROR) {
+            return """\nIGNORING ERROR:\n${getRootCause(executionInfo.exception).getMessage()}\n\n${getStackTrace(executionInfo.exception)}"""
+        } else {
+            return ""
+        }
     }
 
     protected String formatStatus(ExecutionInfo executionInfo) {
         Status status=executionInfo.getStatus()
         if (status==Status.ERROR) {
-            return """${formatStackTrace(executionInfo)}<failure message="${getRootCause(executionInfo.exception).getMessage()}"></failure>"""
+            return """${formatStackTrace(executionInfo)}<failure message="${getRootCause(executionInfo.exception).getMessage().replace("\"","&quot;")}"></failure>"""
         } else if (status==Status.FINISHED) {
             return ''
         } else {

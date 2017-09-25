@@ -25,5 +25,6 @@ enum Status {
 	NEW,
 	RUNNING,
 	FINISHED,
-	ERROR
+	ERROR,
+	IGNORE_ERROR
 }
