@@ -42,7 +42,9 @@ class TestParallelJobReflectingDependencies extends DislTestCase {
 		int jobSleepTime = 3000
 		def job = new TestingJob(
 				intervalToEvaluateConditions: 1000,
-				jobSleepTime: jobSleepTime
+				jobSleepTime: jobSleepTime,
+				fileName: null,
+				openBrowser: true
 		)
 		int startTime = System.currentTimeMillis()
 		job.execute()

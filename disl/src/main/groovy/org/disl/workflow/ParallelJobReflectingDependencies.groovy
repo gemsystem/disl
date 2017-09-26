@@ -26,6 +26,8 @@ abstract class ParallelJobReflectingDependencies extends Job {
 	List<String> onlyDependencyTypes = []
 	int intervalToEvaluateConditions = 5000
 	int jobSleepTime = 0
+	String fileName = null
+	boolean openBrowser = false
 
 	@Override
 	public int executeInternal() {
@@ -34,6 +36,8 @@ abstract class ParallelJobReflectingDependencies extends Job {
 		executor.setOnlyDependencyTypes(onlyDependencyTypes)
 		executor.setIntervalToEvaluateConditions(intervalToEvaluateConditions)
 		executor.setJobSleepTime(jobSleepTime)
+		executor.setFileName(fileName)
+		executor.setOpenBrowser(openBrowser)
 		executor.execute(this)
 		int processedRows=0
 		jobEntries.each {processedRows+=it.executionInfo.processedRows}

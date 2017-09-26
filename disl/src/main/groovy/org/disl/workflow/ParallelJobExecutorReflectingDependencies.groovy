@@ -59,6 +59,14 @@ class ParallelJobExecutorReflectingDependencies {
         parallelJobExecutorWorker.jobSleepTime=jobSleepTime
     }
 
+    void setFileName(String fileName) {
+        parallelJobExecutorWorker.fileName=fileName
+    }
+
+    void setOpenBrowser(boolean openBrowser) {
+        parallelJobExecutorWorker.openBrowser=openBrowser
+    }
+
     @Slf4j
     static class ParallelJobExecutorReflectingDependenciesWorker extends ParallelJobExecutor.ParallelJobExecutorWorker {
         public int intervalToEvaluateConditions = 5000
@@ -66,6 +74,8 @@ class ParallelJobExecutorReflectingDependencies {
         List<String> ignoreDependencyTypes = ["FK"]
         List<String> onlyDependencyTypes = []
         int jobSleepTime = 0 //used during testing to make jobs last longer
+        String fileName = null //Chart filename. If null TMP files are created.
+        boolean openBrowser = false //Auto open browser when chart is created.
 
         HashMap<JobEntry, Future> nonParallelTasks = new HashMap<>()
 
@@ -125,7 +135,7 @@ class ParallelJobExecutorReflectingDependencies {
         }
 
         protected createChartTmpFile() {
-            new DependencyDrawChart(this.dependency).createFile()
+            new DependencyDrawChart(this.dependency).createFile(fileName, openBrowser)
         }
 
         protected void addTasks(Job job) {
