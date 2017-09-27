@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2017 Antonin Krotky <antoninkrotky@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -44,7 +44,7 @@ class TestParallelJobReflectingDependencies extends DislTestCase {
 				intervalToEvaluateConditions: 1000,
 				jobSleepTime: jobSleepTime,
 				fileName: null,
-				openBrowser: true
+				openBrowser: false
 		)
 		int startTime = System.currentTimeMillis()
 		job.execute()

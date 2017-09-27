@@ -18,7 +18,9 @@
  */
 package org.disl.workflow
 
+import org.disl.meta.Mapping
 import org.disl.meta.MetaFactory
+import org.disl.meta.TableMapping
 import org.disl.pattern.AbstractExecutable
 import org.disl.pattern.Executable
 
@@ -31,13 +33,56 @@ import groovy.util.logging.Slf4j;
 @CompileStatic
 abstract class Job extends AbstractExecutable {
 
+	boolean autoAddDependencies = false
 	List<JobEntry> jobEntries=[]
 
 	/**
 	 * Add executable instance to job entry list.
 	 * */
-	void add(Executable executable) {
+	public void add(Executable executable) {
+		if (autoAddDependencies && executable instanceof Mapping) {
+			addMaterializedSubmappings(executable,true)
+		}
+		if (autoAddDependencies || hasntBeenAdded(executable)) {
+			addExecutable(executable)
+		}
+	}
+
+	/**
+	 * Add an executable to jobEntries list
+	 */
+	void addExecutable(Executable executable) {
 		this.jobEntries.add(new JobEntry(executable: executable))
+	}
+
+	/**
+	 * Check all dependencies and add missing TableMapping
+	 */
+	void addMaterializedSubmappings(Mapping executable,boolean firstCall=false) {
+		executable.sources.each { recursivelyAdd(it) }
+		executable.setOperations.each { recursivelyAdd(it.source) }
+		if (!firstCall && executable instanceof TableMapping) {
+			if (hasntBeenAdded(executable)) {
+				addExecutable(executable)
+			}
+		}
+	}
+
+	/**
+	 * Condition for recursion.
+	 */
+	void recursivelyAdd(Object mapping) {
+		if (mapping instanceof Mapping) {
+			addMaterializedSubmappings(mapping)
+		}
+	}
+
+	/**
+	 * Don't allow duplicates when auto adding.
+	 */
+	boolean hasntBeenAdded(Executable executable) {
+		JobEntry jobEntry = jobEntries.find { it.executable.class.canonicalName.equals(executable.class.canonicalName) }
+		return !jobEntry
 	}
 
 	/**
