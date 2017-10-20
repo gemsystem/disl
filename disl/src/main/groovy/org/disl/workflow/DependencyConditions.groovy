@@ -33,7 +33,7 @@ class DependencyConditions {
         if (onMapping instanceof TableMapping) {
             targetTable = onMapping.target
         }
-        if (theTable.class.canonicalName.equals(targetTable?.class.canonicalName)) {
+        if (theTable.class.canonicalName.equals(targetTable?.class?.canonicalName)) {
             dependsOnTarget = true
         }
         if (dependsOnTarget)
