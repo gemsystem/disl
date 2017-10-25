@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2017 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -16,20 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern.generic.step;
+package org.disl.meta
 
-import org.disl.pattern.ExecuteSQLScriptTableStep;
-
-class CreateTable extends ExecuteSQLScriptTableStep {
-
-		String getCode() {
-			"""\
-CREATE TABLE "${table.physicalSchema}"."${table.name}" (
-	${table.columnDefinitions.join(",\n\t")});
-
-COMMENT ON TABLE ${table.physicalSchema}.${table.name} IS '${table.description}';
-
-${table.columns.collect({"COMMENT ON COLUMN ${table.physicalSchema}.${table.name}.${it.name} is '${it.description}';"}).join('\n')}
-"""
-		}
-	}
+/**
+ * Glossary term.
+ */
+class Term extends Base {
+}

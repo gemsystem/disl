@@ -18,6 +18,11 @@
  */
 package org.disl.pattern
 
+import org.junit.Assert
+
+import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
+
 import static groovy.test.GroovyAssert.*
 
 import org.disl.meta.Base
@@ -45,10 +50,25 @@ class TestPattern  {
 		testingPattern.simulate();
 		assertEquals("DROP \nBaseMock", testingPattern.steps[0].code)
 	}
+
+	@Test
+	public void testCopyCodeToClipboard() {
+		testingPattern.copyCodeToClipboard()
+		String expected="""\
+DROP 
+BaseMock"""
+		assertEquals(expected,Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor))
+
+	}
 	
 	@Test
 	public void testExecute() {
 		testingPattern.execute();
+	}
+
+	@Test
+	void testSteps() {
+		Assert.assertEquals(1,testingPattern.steps.size())
 	}
 
 	private static class BaseMock extends Base {}
@@ -59,6 +79,7 @@ class TestPattern  {
 		@Override
 		public void init() {
 			add TestingStep
+			add TestingExcludedStep
 		}
 	}
 
@@ -72,6 +93,14 @@ ${getPattern().element.getName()}"""
 		@Override
 		protected int executeInternal() {
 			return 1;
+		}
+	}
+
+	static class TestingExcludedStep extends TestingStep {
+
+		@Override
+		String getExecutionMode() {
+			return 'doNotExecute'
 		}
 	}
 }

@@ -219,18 +219,19 @@ ${joinCondition}"""
 		return new ReverseEngineeringService()
 	}
 	
-	public void validateTableDeployment(Table table,Sql sql=getSql()) {
-		List<Table> tables=getReverseEngineeredTables(table.name,'TABLE',sql)		
+	public void validateTableDeployment(Table table,String tableType='TABLE',Sql sql=getSql()) {
+		List<Table> tables=getReverseEngineeredTables(table.physicalSchema,table.name,tableType,sql)
 		if (!tables ||tables.size()==0) {
 			throw new AssertionError("Table ${table.getRefference()} not deployed in database.")
 		} else if (tables.size()>1) {
 			throw new AssertionError("Multiple tables matching ${table.refference} deployed in database.")
 		}
+		Assert.assertEquals("Table comment of deployed ${table.refference} does not match to model.",table.description ?: '',tables[0].description ?: '')
 		validateTableColumns(tables[0],table)
 	}
 
 	public void validateViewDeployment(Mapping mapping,Sql sql=getSql()) {
-		List<Table> tables=getReverseEngineeredTables(mapping.name,'VIEW',sql)		
+		List<Table> tables=getReverseEngineeredTables(Context.getPhysicalSchemaName(mapping.schema),mapping.name,'VIEW',sql)
 		if (!tables ||tables.size()==0) {
 			throw new AssertionError("Table [${getSchema()}].[${mapping.getName()}] not deployed in database.")
 		} else if (tables.size()>1) {
@@ -240,19 +241,24 @@ ${joinCondition}"""
 	}
 
 	protected void validateTableColumns(Table reversedTable,Table modelTable) {
-		String reversedColumns=reversedTable.getColumns().collect({"$it.name"}).join(',\n')
-		String modelColumns=modelTable.getColumns().collect({"$it.name"}).join(',\n')
+
+		String reversedColumns=reversedTable.getColumns().collect({toString(it)}).join('')
+		String modelColumns=modelTable.getColumns().collect({toString(it)}).join('')
 		Assert.assertEquals("Column definition of deployed ${modelTable.refference} does not match to model.",modelColumns,reversedColumns)
 	}
-	
+
+	protected String toString(Column c) {
+		"${c.name.padRight(30)} ${c.dataType.padRight(30)} ${c.description ?: ''}\n"
+	}
+
 	protected void validateMappingColumns(Table reversedTable,Mapping mapping) {
 		String reversedColumns=reversedTable.getColumns().collect({"$it.name"}).join(',\n')
 		String modelColumns=mapping.getColumns().collect({"$it.alias"}).join(',\n')
 		Assert.assertEquals("Column definition of deployed ${mapping.refference} does not match to model.",modelColumns,reversedColumns)
 	}
 	
-	protected List<Table> getReverseEngineeredTables(String tableName,String tableType,Sql sql) {
-		return getReverseEngineeringService().reverseEngineerTables(sql,tableName,tableType,getSchema())		
+	protected List<Table> getReverseEngineeredTables(String tableSchema,String tableName,String tableType,Sql sql) {
+		return getReverseEngineeringService().reverseEngineerTables(sql,tableName,tableType,tableSchema)
 	}
 	
 	@Override

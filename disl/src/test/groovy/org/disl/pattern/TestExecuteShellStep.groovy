@@ -16,36 +16,41 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.util.wiki
+package org.disl.pattern
 
-import groovy.json.JsonBuilder
-import org.disl.meta.Table
-import org.disl.pattern.FileOutputStep
-import org.disl.util.wiki.visjs.DataModelNetwork
+import org.junit.Assert
+import org.junit.Test
 
 /**
- * Create file containg table data model in JSON format for vis.js network visualisation.
+ * Created by kh13346 on 31.8.2017.
  */
-class TableDataModelData  extends FileOutputStep {
+class TestExecuteShellStep {
 
-    Table table
 
-    @Override
-    File getFile() {
-        return WikiHelper.getDataModelDataFile(table.class.name)
-    }
-
-    @Override
-    String getCode() {
-        new JsonBuilder(new DataModelNetwork(table)).toPrettyString()
-    }
-
-    @Override
-    int executeInternal() {
-        //generate data model file only when foreign keys exist.
-        if (table.foreignKeys.size()>0) {
-            return super.executeInternal()
+    ExecuteShellStep getTestingStep() {
+        new ExecuteShellStep() {
+            @Override
+            String getCode() {
+                if (isWindows())
+                {
+                    return 'dir'
+                }
+                return 'ls'
+            }
         }
-        return 0
     }
+
+    @Test
+    void testExecute() {
+        ExecuteShellStep t=getTestingStep()
+        String expected
+        if (t.isWindows()) {
+            expected="cmd /c dir".execute().text
+        } else {
+            expected="sh -c dir".execute().text
+        }
+        t.execute()
+        Assert.assertEquals(expected ,t.processOutput)
+    }
+
 }

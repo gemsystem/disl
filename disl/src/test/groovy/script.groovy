@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2017 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -16,20 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern.generic.step;
+import java.security.KeyStore
 
-import org.disl.pattern.ExecuteSQLScriptTableStep;
+def keyAlias = "keyAlias"
+def keystorePassword = 'tajne'
 
-class CreateTable extends ExecuteSQLScriptTableStep {
+def key = "key"
+def keyPassword='secure'
 
-		String getCode() {
-			"""\
-CREATE TABLE "${table.physicalSchema}"."${table.name}" (
-	${table.columnDefinitions.join(",\n\t")});
+File f=new File(System.getProperty("user.home"),'.dislKeyStore' )
 
-COMMENT ON TABLE ${table.physicalSchema}.${table.name} IS '${table.description}';
-
-${table.columns.collect({"COMMENT ON COLUMN ${table.physicalSchema}.${table.name}.${it.name} is '${it.description}';"}).join('\n')}
-"""
-		}
-	}
+KeyStore ks = KeyStore.getInstance("JKS");
+ks.setKeyEntry(keyAlias, key, keyPassword.toCharArray(),null);
+OutputStream writeStream = new FileOutputStream(f);
+ks.store(writeStream, keystorePassword.toCharArray());
+writeStream.close()
