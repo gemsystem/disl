@@ -131,13 +131,9 @@ class ParallelJobExecutorReflectingDependencies {
                 this.dependency.objects.get(jobEntry.executable).backgroundColor='grey'
                 this.dependency.objects.get(jobEntry.executable).title='Not started yet'
             }
-            getStartedTasks().each{jobEntry,future ->
-                this.dependency.objects[jobEntry.executable].backgroundColor='gold'
-                this.dependency.objects[jobEntry.executable].title='Started, waiting for avaiable thread'
-            }
             getRunningTasks().each{jobEntry,future ->
                 this.dependency.objects.get(jobEntry.executable).backgroundColor='red'
-                this.dependency.objects.get(jobEntry.executable).title='Running'
+                this.dependency.objects.get(jobEntry.executable).title='Submitted (running or waiting for an available thread)'
             }
             getFinishedTasks().each{jobEntry,future ->
                 this.dependency.objects.get(jobEntry.executable).backgroundColor='green'
