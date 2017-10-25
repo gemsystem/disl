@@ -22,9 +22,11 @@ package org.disl.workflow
  * */
 abstract class ParallelJob extends Job {
 
+	int parallelExecutorThreads=0
+
 	@Override
 	public int executeInternal() {
-		ParallelJobExecutor.instance.execute(this)
+		ParallelJobExecutor.instance.setParallelExecutorThreads(parallelExecutorThreads).execute(this)
 		int processedRows=0
 		jobEntries.each {processedRows+=it.executionInfo.processedRows}
 		return processedRows

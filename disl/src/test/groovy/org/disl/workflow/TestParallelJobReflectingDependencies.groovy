@@ -18,12 +18,9 @@
  */
 package org.disl.workflow
 
-import groovy.sql.Sql
-import org.disl.meta.ColumnMapping
 import org.disl.meta.Context
 import org.disl.meta.MetaFactory
 import org.disl.meta.TableMapping
-import org.disl.pattern.ExecuteSQLQueryStep
 import org.disl.pattern.generic.TruncateInsertPattern
 import org.disl.test.DislTestCase
 import org.junit.Before
@@ -39,17 +36,20 @@ class TestParallelJobReflectingDependencies extends DislTestCase {
 	
 	@Test
 	public void testExecute() {
-		int jobSleepTime = 3000
+		int jobSimulateSleepTime = 3000
 		def job = new TestingJob(
+				ignoreDependencyTypes: [],
+				onlyDependencyTypes: [],
 				intervalToEvaluateConditions: 1000,
-				jobSleepTime: jobSleepTime,
+				jobSimulateSleepTime: jobSimulateSleepTime,
 				fileName: null,
-				openBrowser: false
+				openBrowser: false,
+				parallelExecutorThreads: 0 //use default value from property file
 		)
 		int startTime = System.currentTimeMillis()
 		job.execute()
 		int finishTime = System.currentTimeMillis()
-		assert (finishTime-startTime) > (jobSleepTime*2)
+		assert (finishTime-startTime) > (jobSimulateSleepTime*2)
 	}
 
 	static class TestingJob extends ParallelJobReflectingDependencies {

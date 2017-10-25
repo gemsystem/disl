@@ -37,6 +37,76 @@ class Dependency {
         buildDependencyMap(objects)
     }
 
+    public List getMembers() {
+        objects.collect {object,property->object}
+    }
+
+    /**
+     * Prune dependency chart. Keeps objects from keepList
+     * and all dependant objects from hierarchy.
+     */
+    public Dependency prune(List<Class> keepList) {
+        pruneObjects(keepList)
+        pruneDependencies()
+        return this
+    }
+
+    public Dependency remove(List<Class> removeList) {
+        removeObjects(removeList)
+        pruneDependencies()
+        return this
+    }
+
+    protected void removeObjects(List<Class> removeList) {
+        Map<Object, DependencyPropertiesVO> retObjects = new HashMap<>()
+        this.objects.each{ object, property ->
+            boolean remove=false
+            removeList.each{classToRemove ->
+                if(classToRemove.isInstance(object)) remove=true
+            }
+            if(!remove) retObjects[object]=this.objects[object];
+        }
+        this.objects=retObjects
+    }
+
+    protected void pruneObjects(List<Class> keepList) {
+        Map<Object, DependencyPropertiesVO> retObjects = new HashMap<>()
+        //copy keepList
+        keepList.each { keep ->
+            this.objects.each { object, property ->
+                if (keep.canonicalName.equals(object.class.canonicalName)) {
+                    retObjects[object] = this.objects[object]
+                }
+            }
+        }
+        //copy all dependencies
+        boolean continueCondition = true
+        while (continueCondition) {
+            continueCondition=false
+            Map<Object, DependencyPropertiesVO> addRetObjects = new HashMap<>()
+            retObjects.each { theObject, theProperty ->
+                this.objects.each{ onObject, onProperty ->
+                    if(this.isDependant(theObject,onObject) && !retObjects[onObject] && !addRetObjects[onObject]) {
+                        addRetObjects[onObject]=this.objects[onObject]
+                        continueCondition=true
+                    }
+                }
+            }
+            retObjects.putAll(addRetObjects)
+        }
+        this.objects=retObjects
+    }
+
+    protected void pruneDependencies() {
+        Map<Object, Map<Object,DependencyPropertiesVO>> retDependencies = new HashMap<>()
+        this.objects.each{object, property ->
+            if (this.dependencies.get(object)) {
+                retDependencies.put(object,this.dependencies.get(object))
+            }
+        }
+        this.dependencies=retDependencies
+    }
+
     protected void buildDependencyMap(List objects) {
         objects.each {
             theObject ->

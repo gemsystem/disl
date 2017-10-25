@@ -39,41 +39,52 @@ class ParallelJobExecutorReflectingDependencies {
         parallelJobExecutorWorker.execute(job)
     }
 
-    void setIgnoreDependencyTypes(List<String> ignoreDependencyTypes){
+    ParallelJobExecutorReflectingDependencies setIgnoreDependencyTypes(List<String> ignoreDependencyTypes){
         parallelJobExecutorWorker.ignoreDependencyTypes=ignoreDependencyTypes
+        return this
     }
 
-    void setOnlyDependencyTypes(List<String> onlyDependencyTypes){
+    ParallelJobExecutorReflectingDependencies setOnlyDependencyTypes(List<String> onlyDependencyTypes){
         parallelJobExecutorWorker.onlyDependencyTypes=onlyDependencyTypes
+        return this
     }
 
-    void setIntervalToEvaluateConditions(int intervalToEvaluateConditions) {
+    ParallelJobExecutorReflectingDependencies setIntervalToEvaluateConditions(int intervalToEvaluateConditions) {
         parallelJobExecutorWorker.intervalToEvaluateConditions=intervalToEvaluateConditions
+        return this
     }
 
     Dependency getDependency() {
         return parallelJobExecutorWorker.dependency
     }
 
-    void setJobSleepTime(int jobSleepTime) {
-        parallelJobExecutorWorker.jobSleepTime=jobSleepTime
+    ParallelJobExecutorReflectingDependencies setJobSimulateSleepTime(int jobSimulateSleepTime) {
+        parallelJobExecutorWorker.jobSimulateSleepTime=jobSimulateSleepTime
+        return this
     }
 
-    void setFileName(String fileName) {
+    ParallelJobExecutorReflectingDependencies setFileName(String fileName) {
         parallelJobExecutorWorker.fileName=fileName
+        return this
     }
 
-    void setOpenBrowser(boolean openBrowser) {
+    ParallelJobExecutorReflectingDependencies setOpenBrowser(boolean openBrowser) {
         parallelJobExecutorWorker.openBrowser=openBrowser
+        return this
+    }
+
+    ParallelJobExecutorReflectingDependencies setParallelExecutorThreads(int parallelExecutorThreads) {
+        parallelJobExecutorWorker.parallelExecutorThreads=parallelExecutorThreads
+        return this
     }
 
     @Slf4j
     static class ParallelJobExecutorReflectingDependenciesWorker extends ParallelJobExecutor.ParallelJobExecutorWorker {
         public int intervalToEvaluateConditions = 5000
         Dependency dependency
-        List<String> ignoreDependencyTypes = ["FK"]
+        List<String> ignoreDependencyTypes = []
         List<String> onlyDependencyTypes = []
-        int jobSleepTime = 0 //used during testing to make jobs last longer
+        int jobSimulateSleepTime = 0 //simulation mode when >0
         String fileName = null //Chart filename. If null TMP files are created.
         boolean openBrowser = false //Auto open browser when chart is created.
 
@@ -170,7 +181,7 @@ class ParallelJobExecutorReflectingDependencies {
 
         protected Future submitTask(JobEntry jobEntry) {
             def service = getExecutorService()
-            return service.submit(createCallable(jobEntry,jobSleepTime))
+            return service.submit(createCallable(jobEntry,jobSimulateSleepTime))
         }
 
         @Override

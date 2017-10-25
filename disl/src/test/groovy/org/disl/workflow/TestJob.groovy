@@ -61,6 +61,12 @@ class TestJob extends DislTestCase {
 		Assert.assertArrayEquals(job.jobEntries.collect{it.executable.class.simpleName}.toArray(),["MappingMaterialized","MappingIntoTable"].toArray())
 	}
 
+	@Test
+	public void testTestingJobWithStgMappingDependencyPrune() {
+		def job = new TestingJobWithStgMappingDependencyPrune()
+		Assert.assertArrayEquals(job.jobEntries.collect{it.executable.class.simpleName}.toArray(),["MappingMaterialized","MappingIntoTable"].toArray())
+	}
+
 	static class TestingJobSimpleMappingNoDependency extends Job {
 		TestingJobSimpleMappingNoDependency() {
 			def map = MetaFactory.create(TestMappingMaterialized.MappingMaterialized)
@@ -93,4 +99,15 @@ class TestJob extends DislTestCase {
 			addAll([map])
 		}
 	}
+
+	static class TestingJobWithStgMappingDependencyPrune extends Job {
+		def tab1 = MetaFactory.create(TestMappingMaterialized.MappingIntoTable)
+		def tab2 = MetaFactory.create(TestDependency.Tab2)
+		Dependency dependency = new Dependency([tab1,tab2]).prune([TestMappingMaterialized.MappingIntoTable])
+		TestingJobWithStgMappingDependencyPrune() {
+			autoAddDependencies = true
+			addAll(dependency.getMembers())
+		}
+	}
+
 }
