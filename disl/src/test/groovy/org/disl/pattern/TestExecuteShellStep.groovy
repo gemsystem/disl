@@ -47,7 +47,7 @@ class TestExecuteShellStep {
         if (t.isWindows()) {
             expected="cmd /c dir".execute().text
         } else {
-            expected="sh -c dir".execute().text
+            expected="sh -c ls".execute().text
         }
         t.execute()
         Assert.assertEquals(expected ,t.processOutput)
