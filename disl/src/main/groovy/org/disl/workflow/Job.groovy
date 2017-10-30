@@ -43,9 +43,7 @@ abstract class Job extends AbstractExecutable {
 		if (autoAddDependencies && executable instanceof Mapping) {
 			addMaterializedSubmappings(executable,true)
 		}
-		if (autoAddDependencies || hasntBeenAdded(executable)) {
-			addExecutable(executable)
-		}
+		addExecutable(executable)
 	}
 
 	/**
