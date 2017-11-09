@@ -25,6 +25,7 @@ import groovy.transform.CompileStatic
  * */
 @CompileStatic
 class IndexMeta {
+	String indexName
 	List<String> columnNames
 	
 	public static initIndexes(IndexOwner object) {
@@ -40,7 +41,7 @@ class IndexMeta {
 	}
 	
 	protected static void initIndex(Index index, IndexOwner object) {
-		IndexMeta indexMeta=new IndexMeta(columnNames: Arrays.asList(index.columns()))
+		IndexMeta indexMeta=new IndexMeta(indexName: index.name(), columnNames: Arrays.asList(index.columns()))
 		object.indexes.add(indexMeta)
 	} 
 }

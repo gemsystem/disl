@@ -26,5 +26,6 @@ import java.lang.annotation.RetentionPolicy
  * */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Index {
+	String name() default ""
 	String[] columns()
 }
