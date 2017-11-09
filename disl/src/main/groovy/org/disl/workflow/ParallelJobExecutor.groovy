@@ -36,6 +36,11 @@ class ParallelJobExecutor {
 
 	ParallelJobExecutorWorker parallelJobExecutorWorker = new ParallelJobExecutorWorker()
 
+	ParallelJobExecutor setParallelExecutorThreads(int parallelExecutorThreads) {
+		parallelJobExecutorWorker.parallelExecutorThreads=parallelExecutorThreads
+		return this
+	}
+
 	/**
 	 * Execute Job's jobEntries in parallel.
 	 * */
@@ -45,6 +50,7 @@ class ParallelJobExecutor {
 
 	@Slf4j
 	static class ParallelJobExecutorWorker {
+		int parallelExecutorThreads
 		int parallelJobsInProgress=0
 
 		private ExecutorService executorService
@@ -61,7 +67,8 @@ class ParallelJobExecutor {
 
 		synchronized ExecutorService getExecutorService() {
 			if (executorService==null) {
-				executorService=Executors.newFixedThreadPool(Integer.parseInt(Context.getContextProperty("disl.parallelExecutorThreads", "4")))
+				if (!parallelExecutorThreads) parallelExecutorThreads=Integer.parseInt(Context.getContextProperty("disl.parallelExecutorThreads", "4"))
+				executorService=Executors.newFixedThreadPool(parallelExecutorThreads)
 			}
 			return executorService
 		}
@@ -126,15 +133,16 @@ class ParallelJobExecutor {
 			futures.each({it.get()})
 		}
 
-		protected Callable createCallable(Executable executable, int jobSleepTime=0) {
+		protected Callable createCallable(Executable executable, int jobSimulateSleepTime=0) {
 			Context parentContext=Context.getContext()
 			return new Callable() {
 				Object call() {
 					try {
 						Context.init(parentContext)
-						executable.execute();
-						if(jobSleepTime>0) {
-							sleep(jobSleepTime)
+						if(jobSimulateSleepTime>0) {
+							sleep(jobSimulateSleepTime)
+						} else {
+							executable.execute();
 						}
 					} catch (Exception e) {
 						throw e;

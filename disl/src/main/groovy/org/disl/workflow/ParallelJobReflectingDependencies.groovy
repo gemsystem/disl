@@ -22,22 +22,28 @@ package org.disl.workflow
  * */
 abstract class ParallelJobReflectingDependencies extends Job {
 
-	List<String> ignoreDependencyTypes = ["FK"]
-	List<String> onlyDependencyTypes = []
-	int intervalToEvaluateConditions = 5000
-	int jobSleepTime = 0
+    List<String> ignoreDependencyTypes = []
+    List<String> onlyDependencyTypes = []
+    int intervalToEvaluateConditions = 5000
+    int jobSimulateSleepTime = 0
+    String fileName = null
+    boolean openBrowser = false
+    int parallelExecutorThreads = 0 //use parallelExecutorThreads parameter from property file when 0
 
-	@Override
-	public int executeInternal() {
-		def executor = ParallelJobExecutorReflectingDependencies.instance
-		executor.setIgnoreDependencyTypes(ignoreDependencyTypes)
-		executor.setOnlyDependencyTypes(onlyDependencyTypes)
-		executor.setIntervalToEvaluateConditions(intervalToEvaluateConditions)
-		executor.setJobSleepTime(jobSleepTime)
-		executor.execute(this)
-		int processedRows=0
-		jobEntries.each {processedRows+=it.executionInfo.processedRows}
-		return processedRows
-	}
+    @Override
+    public int executeInternal() {
+        def executor = ParallelJobExecutorReflectingDependencies.instance
+                .setIgnoreDependencyTypes(ignoreDependencyTypes)
+                .setOnlyDependencyTypes(onlyDependencyTypes)
+                .setIntervalToEvaluateConditions(intervalToEvaluateConditions)
+                .setJobSimulateSleepTime(jobSimulateSleepTime)
+                .setFileName(fileName)
+                .setOpenBrowser(openBrowser)
+                .setParallelExecutorThreads(parallelExecutorThreads)
+                .execute(this)
+        int processedRows = 0
+        jobEntries.each { processedRows += it.executionInfo.processedRows }
+        return processedRows
+    }
 
 }

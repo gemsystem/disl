@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -97,6 +97,8 @@ class TestDependency extends DislTestCase {
         String chart = dependencyDrawChart.getChart()
 
         dependencyDrawChart.createFile()
+
+        Assert.assertEquals(dependency.getObjects().size(),4)
     }
 
     @Test
@@ -129,4 +131,57 @@ class TestDependency extends DislTestCase {
         Assert.assertArrayEquals(dependency.getDependencyTypes(mapB,tab3,["source"],[]).toArray(),[].toArray())
         Assert.assertArrayEquals(dependency.getDependencyTypes(mapB,tab3,["vse"],[]).toArray(),["source"].toArray())
     }
+
+    @Test
+    public void testDependencyPruning() {
+        def tab1 = MetaFactory.create(Tab1)
+        def tab2 = MetaFactory.create(Tab2)
+        def tab3 = MetaFactory.create(Tab3)
+        def mapB = MetaFactory.create(TestingMappingB)
+        Dependency dependency = new Dependency([tab1,tab2,tab3,mapB]).prune([TestingMappingB])
+
+        DependencySetProperties dependencySetProperties = new DependencySetProperties(dependency)
+        dependencySetProperties.setGraphicalStyle()
+
+        DependencyDrawChart dependencyDrawChart = new DependencyDrawChart(dependency)
+        String chart = dependencyDrawChart.getChart()
+
+        dependencyDrawChart.createFile()
+
+        Assert.assertEquals(dependency.getObjects().size(),3)
+
+        Job job = new Job() {
+            {//constructor
+                addAll(dependency.getMembers())
+                autoAddDependencies = true
+            }
+        }
+    }
+
+    @Test
+    public void testDependencyRemove1() {
+        def tab1 = MetaFactory.create(Tab1)
+        def tab2 = MetaFactory.create(Tab2)
+        def tab3 = MetaFactory.create(Tab3)
+        def mapB = MetaFactory.create(TestingMappingB)
+
+        Dependency dependency = new Dependency([tab1,tab2,tab3,mapB]).remove([Table])
+        new DependencySetProperties(dependency).setGraphicalStyle()
+        new DependencyDrawChart(dependency).createFile()
+        Assert.assertEquals(dependency.getObjects().size(),1)
+    }
+
+    @Test
+    public void testDependencyRemove2() {
+        def tab1 = MetaFactory.create(Tab1)
+        def tab2 = MetaFactory.create(Tab2)
+        def tab3 = MetaFactory.create(Tab3)
+        def mapB = MetaFactory.create(TestingMappingB)
+
+        Dependency dependency = new Dependency([tab1,tab2,tab3,mapB]).remove([Tab1,Tab3])
+        new DependencySetProperties(dependency).setGraphicalStyle()
+        new DependencyDrawChart(dependency).createFile()
+        Assert.assertEquals(dependency.getObjects().size(),2)
+    }
+
 }

@@ -104,24 +104,24 @@ class DependencyDrawChart {
   var options = {
    layout:{
     randomSeed: 0,
-    improvedLayout:true,
+    improvedLayout:false,
     hierarchical: {
-      enabled:false,
-      levelSeparation: 150,
-      nodeSpacing: 100,
-      treeSpacing: 200,
-      blockShifting: false,
-      edgeMinimization: false,
-      parentCentralization: false,
-      direction: 'UD',        // UD, DU, LR, RL
-      sortMethod: 'hubsize'   // hubsize, directed
+      enabled:true,
+      levelSeparation: 400,
+      nodeSpacing: 50,
+      treeSpacing: 50,
+      blockShifting: true,
+      edgeMinimization: true,
+      parentCentralization: true,
+      direction: 'RL',        
+      sortMethod: 'directed'
     },
    },
    edges:{
-    smooth: true
+    smooth: false
    },
    physics: {
-    enabled: true,
+    enabled: false,
     minVelocity: 0.75
    },
   interaction:{

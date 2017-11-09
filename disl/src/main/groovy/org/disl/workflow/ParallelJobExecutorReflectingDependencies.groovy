@@ -39,33 +39,54 @@ class ParallelJobExecutorReflectingDependencies {
         parallelJobExecutorWorker.execute(job)
     }
 
-    void setIgnoreDependencyTypes(List<String> ignoreDependencyTypes){
+    ParallelJobExecutorReflectingDependencies setIgnoreDependencyTypes(List<String> ignoreDependencyTypes){
         parallelJobExecutorWorker.ignoreDependencyTypes=ignoreDependencyTypes
+        return this
     }
 
-    void setOnlyDependencyTypes(List<String> onlyDependencyTypes){
+    ParallelJobExecutorReflectingDependencies setOnlyDependencyTypes(List<String> onlyDependencyTypes){
         parallelJobExecutorWorker.onlyDependencyTypes=onlyDependencyTypes
+        return this
     }
 
-    void setIntervalToEvaluateConditions(int intervalToEvaluateConditions) {
+    ParallelJobExecutorReflectingDependencies setIntervalToEvaluateConditions(int intervalToEvaluateConditions) {
         parallelJobExecutorWorker.intervalToEvaluateConditions=intervalToEvaluateConditions
+        return this
     }
 
     Dependency getDependency() {
         return parallelJobExecutorWorker.dependency
     }
 
-    void setJobSleepTime(int jobSleepTime) {
-        parallelJobExecutorWorker.jobSleepTime=jobSleepTime
+    ParallelJobExecutorReflectingDependencies setJobSimulateSleepTime(int jobSimulateSleepTime) {
+        parallelJobExecutorWorker.jobSimulateSleepTime=jobSimulateSleepTime
+        return this
+    }
+
+    ParallelJobExecutorReflectingDependencies setFileName(String fileName) {
+        parallelJobExecutorWorker.fileName=fileName
+        return this
+    }
+
+    ParallelJobExecutorReflectingDependencies setOpenBrowser(boolean openBrowser) {
+        parallelJobExecutorWorker.openBrowser=openBrowser
+        return this
+    }
+
+    ParallelJobExecutorReflectingDependencies setParallelExecutorThreads(int parallelExecutorThreads) {
+        parallelJobExecutorWorker.parallelExecutorThreads=parallelExecutorThreads
+        return this
     }
 
     @Slf4j
     static class ParallelJobExecutorReflectingDependenciesWorker extends ParallelJobExecutor.ParallelJobExecutorWorker {
         public int intervalToEvaluateConditions = 5000
         Dependency dependency
-        List<String> ignoreDependencyTypes = ["FK"]
+        List<String> ignoreDependencyTypes = []
         List<String> onlyDependencyTypes = []
-        int jobSleepTime = 0 //used during testing to make jobs last longer
+        int jobSimulateSleepTime = 0 //simulation mode when >0
+        String fileName = null //Chart filename. If null TMP files are created.
+        boolean openBrowser = false //Auto open browser when chart is created.
 
         HashMap<JobEntry, Future> nonParallelTasks = new HashMap<>()
 
@@ -110,13 +131,9 @@ class ParallelJobExecutorReflectingDependencies {
                 this.dependency.objects.get(jobEntry.executable).backgroundColor='grey'
                 this.dependency.objects.get(jobEntry.executable).title='Not started yet'
             }
-            getStartedTasks().each{jobEntry,future ->
-                this.dependency.objects[jobEntry.executable].backgroundColor='gold'
-                this.dependency.objects[jobEntry.executable].title='Started, waiting for avaiable thread'
-            }
             getRunningTasks().each{jobEntry,future ->
                 this.dependency.objects.get(jobEntry.executable).backgroundColor='red'
-                this.dependency.objects.get(jobEntry.executable).title='Running'
+                this.dependency.objects.get(jobEntry.executable).title='Submitted (running or waiting for an available thread)'
             }
             getFinishedTasks().each{jobEntry,future ->
                 this.dependency.objects.get(jobEntry.executable).backgroundColor='green'
@@ -125,7 +142,7 @@ class ParallelJobExecutorReflectingDependencies {
         }
 
         protected createChartTmpFile() {
-            new DependencyDrawChart(this.dependency).createFile()
+            new DependencyDrawChart(this.dependency).createFile(fileName, openBrowser)
         }
 
         protected void addTasks(Job job) {
@@ -160,7 +177,7 @@ class ParallelJobExecutorReflectingDependencies {
 
         protected Future submitTask(JobEntry jobEntry) {
             def service = getExecutorService()
-            return service.submit(createCallable(jobEntry,jobSleepTime))
+            return service.submit(createCallable(jobEntry,jobSimulateSleepTime))
         }
 
         @Override

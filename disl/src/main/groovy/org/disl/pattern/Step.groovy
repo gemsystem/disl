@@ -31,12 +31,16 @@ import org.disl.meta.Table
 public abstract class Step extends AbstractExecutable {
 	
 	String name;
+	/**
+	 * Step execution mode.
+	 * */
+	String executionMode = Context.EXECUTION_MODE_DEFAULT
 
 	/**
-	 * Step execution mode. For pattern only steps of the same execution mode as the context execution mode are created.  
+	 *  Decides if this should be executed. By default only steps of the same execution mode as the context execution mode are executed.
 	 * */
-	String getExecutionMode(){
-		Context.EXECUTION_MODE_DEFAULT
+	public boolean isToExecute() {
+		Context.getContext().getExecutionMode().equals(this.getExecutionMode())
 	}
 
 	Pattern pattern
@@ -58,6 +62,10 @@ public abstract class Step extends AbstractExecutable {
 	
 	public void setName(String name) {
 		this.name=name
+	}
+
+	public Context getContext() {
+		Context.getContext()
 	}
 
 	@Override

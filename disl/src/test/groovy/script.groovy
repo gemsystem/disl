@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2017 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -16,20 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.workflow
-/**
- * ParallelJob executes executables in parallel.
- * */
-abstract class ParallelJob extends Job {
+import java.security.KeyStore
 
-	int parallelExecutorThreads=0
+def keyAlias = "keyAlias"
+def keystorePassword = 'tajne'
 
-	@Override
-	public int executeInternal() {
-		ParallelJobExecutor.instance.setParallelExecutorThreads(parallelExecutorThreads).execute(this)
-		int processedRows=0
-		jobEntries.each {processedRows+=it.executionInfo.processedRows}
-		return processedRows
-	}
+def key = "key"
+def keyPassword='secure'
 
-}
+File f=new File(System.getProperty("user.home"),'.dislKeyStore' )
+
+KeyStore ks = KeyStore.getInstance("JKS");
+ks.setKeyEntry(keyAlias, key, keyPassword.toCharArray(),null);
+OutputStream writeStream = new FileOutputStream(f);
+ks.store(writeStream, keystorePassword.toCharArray());
+writeStream.close()
