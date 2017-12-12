@@ -64,10 +64,14 @@ abstract class TableMappingMaterialized extends TableMapping {
 
     @Override
     Table getTarget() {
-        new Table(name: this.fullName) {
+        new Table() {
             @Override
             TablePattern getPattern() {
                 return null
+            }
+            @Override
+            String getName() {
+                return this.fullName
             }
         }
     }
