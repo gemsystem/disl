@@ -72,8 +72,13 @@ $sources
     }
     String getTargetSection() {
         if (mapping instanceof TableMapping) {
-            return """\
+            if (mapping.getTarget().getPattern()!=null) {
+                return """\
 ## Target:  [${mapping.target}](${WikiHelper.url(mapping.target)})"""
+            } else {
+                return """\
+## Target:  ${mapping.getTarget().getName()}"""
+            }
         }
         return ''
     }

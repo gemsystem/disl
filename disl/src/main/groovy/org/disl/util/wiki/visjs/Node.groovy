@@ -40,7 +40,11 @@ class Node {
         id = t.class.name
         label = t.name
         title = t.description
-        targetUrl = WikiHelper.url(t)
+        if (t.getPattern()!=null) {
+            targetUrl = WikiHelper.url(t)
+        } else {
+            targetUrl = ""
+        }
         try {
             switch (t['stereotype']) {
                 case 'dimension':

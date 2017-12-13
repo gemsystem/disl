@@ -92,9 +92,11 @@ class WikiHelper extends MetaManager {
     }
 
     void generate(Table table) {
-        new TablePageStep(table:table).execute()
-        new TableDataModelData(table:table).execute()
-        new TableLineageDataStep(table:table).execute()
+        if (table.getPattern()!=null) {
+            new TablePageStep(table:table).execute()
+            new TableDataModelData(table:table).execute()
+            new TableLineageDataStep(table:table).execute()
+        }
     }
 
     void generate(Lookup lookup) {
@@ -210,7 +212,7 @@ class WikiHelper extends MetaManager {
         mapping.setOperations.each {
             addLineageSourceUsage(it.source,mapping)
         }
-        if (mapping instanceof  TableMapping) {
+        if (mapping instanceof  TableMapping && mapping.getTarget().getPattern() != null) {
             addMappingTargetUsage(mapping,mapping.getTarget())
         }
     }
