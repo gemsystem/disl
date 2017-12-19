@@ -69,6 +69,24 @@ class DependencyDrawChart {
       height:90vh;
       border: 1px solid lightgray;
     }
+  
+      table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        text-align: left;
+        padding: 8px;
+        vertical-align:top;
+        width:32%
+    }
+    
+    tr:nth-child(even){background-color: #f2f2f2}
+    
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
   </style>
 </head>
 <body>
@@ -131,6 +149,30 @@ class DependencyDrawChart {
   var network = new vis.Network(container, data, options);
 </script>
 
+<table id = 'resultsTable'>
+    <TR>
+         <TD>
+            <h3>Not started yet</H3>
+            <table>
+                ${ dependency.objects.findAll { key, prop -> prop.backgroundColor == 'grey' }.collect { key, prop -> "<TR><TD style = 'background-color:${prop.backgroundColor}'>${key}</TD></TR>" }.join("")  }
+            </table>
+        </TD>       
+        <TD>
+            <h3>Submitted (running or waiting for an available thread) </H3>
+            <table>
+                ${ dependency.objects.findAll { key, prop -> prop.backgroundColor == 'red' }.collect { key, prop -> "<TR><TD style = 'background-color:${prop.backgroundColor}'>${key}</TD></TR>" }.join("")  }
+            </table>
+        </TD>        
+        <TD >
+            <h3>Finished</H3>
+            <table>
+                ${ dependency.objects.findAll { key, prop -> prop.backgroundColor == 'green' }.collect { key, prop -> "<TR><TD style = 'background-color:${prop.backgroundColor}'>${key}</TD></TR>" }.join("")  }
+            </table>
+        </TD>
+
+
+    </TR>
+</table>
 
 </body>
 </html>
