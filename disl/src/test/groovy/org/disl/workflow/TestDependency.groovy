@@ -20,6 +20,7 @@ package org.disl.workflow
 
 import org.disl.meta.Column
 import org.disl.meta.ColumnMapping
+import org.disl.meta.DependsOn
 import org.disl.meta.ForeignKey
 import org.disl.meta.ForeignKeys
 import org.disl.meta.Mapping
@@ -81,6 +82,14 @@ class TestDependency extends DislTestCase {
         @PrimaryKey
         Column KEY
     }
+
+    @DependsOn(objects = [Tab2,Tab3])
+    static class Tab4 extends Table {
+        CreateOrReplaceTablePattern pattern
+        @PrimaryKey
+        Column KEY
+    }
+
 
     @Test
     public void testChart() {
@@ -184,4 +193,18 @@ class TestDependency extends DislTestCase {
         Assert.assertEquals(dependency.getObjects().size(),2)
     }
 
+    @Test
+    public void testDependencyAnnotation() {
+        def tab1 = MetaFactory.create(Tab1)
+        def tab2 = MetaFactory.create(Tab2)
+        def tab3 = MetaFactory.create(Tab3)
+        def tab4 = MetaFactory.create(Tab4)
+
+        Dependency dependency = new Dependency([tab1,tab2,tab3,tab4])
+        new DependencySetProperties(dependency).setGraphicalStyle()
+        new DependencyDrawChart(dependency).createFile()
+        Assert.assertArrayEquals(dependency.getDependencyTypes(tab4,tab2).toArray(),["annotation"].toArray())
+        Assert.assertArrayEquals(dependency.getDependencyTypes(tab4,tab3).toArray(),["annotation"].toArray())
+        Assert.assertArrayEquals(dependency.getDependencyTypes(tab4,tab1).toArray(),[].toArray())
+    }
 }

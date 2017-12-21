@@ -31,12 +31,14 @@ abstract class Base implements Comparable<Base>,Initializable {
 	String name
 	String description=''
 	Set<String> tags=new HashSet<>()
+	Set<Base> dependsOn=new HashSet<>()
 
 	@Override
 	void init() {
 		initDescription()
 		initName()
 		initTags()
+		initDependsOn()
 	}
 
 	protected void initDescription() {
@@ -65,6 +67,17 @@ abstract class Base implements Comparable<Base>,Initializable {
 			this.tags.addAll(tags.value())
 		}
 	}
+
+	/**
+	 * Init dependsOn by annotation value.
+	 * */
+	void initDependsOn() {
+		DependsOn dependsOn=this.getClass().getAnnotation(DependsOn)
+		if (dependsOn) {
+			this.dependsOn.addAll(dependsOn.objects().collect())
+		}
+	}
+
 
 	public String getName() {
 		if (name==null) {

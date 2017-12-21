@@ -18,7 +18,9 @@
  */
 package org.disl.workflow
 
+import org.disl.meta.Base
 import org.disl.meta.Mapping
+import org.disl.meta.MetaFactory
 import org.disl.meta.Table
 import org.disl.meta.TableMapping
 
@@ -38,6 +40,7 @@ class DependencyConditions {
         }
         if (dependsOnTarget)
             ret.add("target")
+        ret.addAll(evaluateDependsOnAnnotation(theTable,onMapping))
         return ret
     }
 
@@ -54,6 +57,7 @@ class DependencyConditions {
         }
         if (dependsOnFK)
             ret.add("FK")
+        ret.addAll(evaluateDependsOnAnnotation(theTable,onTable))
         return ret
     }
 
@@ -68,6 +72,7 @@ class DependencyConditions {
         theMapping.setOperations.each {
             ret.addAll(getDependencyTypes(it.source, onMapping))
         }
+        ret.addAll(evaluateDependsOnAnnotation(theMapping,onMapping))
         return ret
     }
 
@@ -79,10 +84,24 @@ class DependencyConditions {
         theMapping.setOperations.each {
             ret.addAll(getDependencyTypes(it.source, onTable))
         }
+        ret.addAll(evaluateDependsOnAnnotation(theMapping,onTable))
         return ret
     }
 
     protected HashSet<String> getDependencyTypes(Object theObject, Object onObject) {
         return [] //no dependency
+    }
+
+    protected evaluateDependsOnAnnotation(Base theBase, Base onBase) {
+        HashSet<String> ret = []
+        theBase.dependsOn.each {
+            Base theBaseCreated = MetaFactory.create(it)
+            ret.addAll(getDependencyTypes(theBaseCreated,onBase))
+            /*
+            alternative implementation without recursion:
+              if (it.name.equals(onBase.getClass().getName())) ret.add("annotation")
+            */
+        }
+        if (ret) return ["annotation"] else []
     }
 }
