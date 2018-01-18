@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern;
+package org.disl.pattern
 
 import groovy.transform.CompileStatic
 
