@@ -206,13 +206,21 @@ public class Context implements Cloneable {
 		}
 	}
 
-	protected File getDislHomeDirectory() {
-		String defaultDislHome="${System.getProperty('user.home')}/.disl"
-		File localDislHome=new File('.disl')
-		if (localDislHome.isDirectory()) {
-			defaultDislHome=localDislHome.getAbsolutePath()
+	protected String getDislHomeDirectory() {
+		String localDislHome=""
+		if (System.getProperty(DISL_HOME_PROPERTY)) {
+			localDislHome="${System.getProperty(DISL_HOME_PROPERTY)}.disl"
+		} else {
+			String currentHome = System.getProperty('user.dir')
+			String testedLocalDislHome = ""
+			currentHome.split("\\\\|/").each {
+				testedLocalDislHome += "${it}/"
+				File testedFile = new File("${testedLocalDislHome}.disl")
+				if (testedFile.isDirectory()) return localDislHome = testedFile.getAbsolutePath()
+			}
+			if (!localDislHome) localDislHome="${currentHome}/.disl"
 		}
-		new File(System.getProperty(DISL_HOME_PROPERTY),defaultDislHome)
+		new File(localDislHome)
 	}
 
 	public String getProperty(String key) {
