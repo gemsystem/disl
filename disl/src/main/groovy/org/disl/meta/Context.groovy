@@ -39,8 +39,8 @@ import org.disl.db.reverseEngineering.ReverseEngineeringService
  * The value of global property may be overiden in context configuration file [context name].context.properties.
  * Context configuration files may be stored in DISL home directory and on classpath.
  * DISL home directory is defined by disl.home system variable.
- * If disl.home system variable is not specified and .disl directory from current working folder is used.
- * If .disl directory does not exists in current working folder, user.home/.disl directory is used.
+ * If disl.home system variable is not specified then .disl directory from current working folder and its subfolders are searched.
+ * If .disl directory does not exists in current working folder or its subfolders, user.home/.disl directory is used.
  * <p>Order of context variable value definitions:</p>
  * <ol>System property</ol>
  * <ol>Environment variable (for variables starting with env.)</ol>
@@ -52,7 +52,7 @@ import org.disl.db.reverseEngineering.ReverseEngineeringService
  * Intention of variable definition options:
  * <li>Use system properties to override any value in runtime.</li>
  * <li>Use configuration files in disl.home to define sensitive information (passwords), which should not be stored in project source code.</li>
- * <li>Use global properties to define variable calues common to multiple contexts.</li>
+ * <li>Use global properties to define variable values common to multiple contexts.</li>
  * </p>
  * */
 @CompileStatic
@@ -209,18 +209,18 @@ public class Context implements Cloneable {
 	protected String getDislHomeDirectory() {
 		String localDislHome=""
 		if (System.getProperty(DISL_HOME_PROPERTY)) {
-			localDislHome="${System.getProperty(DISL_HOME_PROPERTY)}.disl"
+			localDislHome="${System.getProperty(DISL_HOME_PROPERTY)}"
 		} else {
-			String currentHome = System.getProperty('user.dir')
-			String testedLocalDislHome = ""
-			currentHome.split("\\\\|/").each {
-				testedLocalDislHome += "${it}/"
-				File testedFile = new File("${testedLocalDislHome}.disl")
-				if (testedFile.isDirectory()) return localDislHome = testedFile.getAbsolutePath()
+			File currentFile=new File(System.getProperty('user.dir'))
+			while (currentFile && !(new File(currentFile,".disl")).isDirectory())
+				currentFile=currentFile.getParentFile()
+			if (currentFile) {
+				localDislHome = currentFile.getAbsolutePath()
+			} else {
+				localDislHome = "not_found"
 			}
-			if (!localDislHome) localDislHome="${currentHome}/.disl"
 		}
-		new File(localDislHome)
+		new File(localDislHome,".disl")
 	}
 
 	public String getProperty(String key) {
