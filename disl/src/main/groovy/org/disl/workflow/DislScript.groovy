@@ -68,7 +68,7 @@ abstract class DislScript extends Script implements Executable{
 	
 	@Override
 	void simulate(){
-		println "Simulating execution of script ${this.getClass().getName()}"		
+		println "/* Simulating execution of script ${this.getClass().getName()} */"
 	}
 	
 	void execute(Class<Executable> executable) {

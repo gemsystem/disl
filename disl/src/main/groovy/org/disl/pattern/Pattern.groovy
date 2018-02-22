@@ -73,7 +73,7 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 	
 	@Override
 	public void simulate() {
-		println "Simulating pattern $this:"
+		println "/* Simulating pattern $this: */"
 		steps.each {it.simulate()}
 	}
 	
