@@ -53,7 +53,6 @@ class TestMapping extends DislTestCase {
 			where "$s1.A=$s1.A"
 			groupBy()
 			having "min($s1.A)='xxx'"
-			havingClause
 		}
 		
 	}
