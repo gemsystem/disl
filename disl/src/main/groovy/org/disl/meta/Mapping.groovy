@@ -47,6 +47,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	private boolean earlyInitialized=doEarlyInit()
 	private String groupBy
 	private String orderBy
+	private String having
 
 	List<ColumnMapping> columns=[]
 	List<MappingSource> sources=[]
@@ -121,8 +122,17 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		return "(${getSQLQuery()})"
 	}
 
-	Closure getHaving() {
-		return {null}
+	public void having(String clause) {
+		having=clause
+	}
+
+	String getHavingClause() {
+		if  (having!=null) {
+			return """
+		HAVING
+			${having}"""
+		}
+		return ""
 	}
 
 	protected void initColumnAliases() {
@@ -325,7 +335,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 			${getSources().collect({it.fromClause}).join("\n			")}
 		WHERE
 			${filter}
-		${getGroupByClause()}${getOrderByClause()}${getSetOperationClause()}
+		${getGroupByClause()}${getHavingClause()}${getOrderByClause()}${getSetOperationClause()}
 	/*End of mapping $name*/"""
 	}
 

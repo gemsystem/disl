@@ -65,6 +65,8 @@ class TestSubMapping extends DislTestCase {
 			s1.A=s1.A
 		GROUP BY
 			s1.A,C,REPEAT(s2.B,3)
+		HAVING
+			min(s1.A)='xxx'
 	/*End of mapping TestingMapping*/) subquery
 		WHERE
 			1=1

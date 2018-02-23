@@ -52,6 +52,8 @@ class TestMapping extends DislTestCase {
 			cartesianJoin s6
 			where "$s1.A=$s1.A"
 			groupBy()
+			having "min($s1.A)='xxx'"
+			havingClause
 		}
 		
 	}
@@ -91,6 +93,8 @@ class TestMapping extends DislTestCase {
 			s1.A=s1.A
 		GROUP BY
 			s1.A,C,REPEAT(s2.B,3)
+		HAVING
+			min(s1.A)='xxx'
 	/*End of mapping TestingMapping*/""".toString(),mapping.getSQLQuery())
 	}
 	
