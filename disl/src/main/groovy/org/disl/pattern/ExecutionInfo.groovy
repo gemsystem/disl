@@ -24,6 +24,11 @@ import groovy.transform.CompileStatic;
 class ExecutionInfo {
 
 	/**
+	 * Get execution identifier.
+	 */
+	String uuid
+
+	/**
 	 * Get runtime status.
 	 * *
 	 * @return
@@ -84,5 +89,3 @@ class ExecutionInfo {
 		exception=e
 	}
 }
-
-
