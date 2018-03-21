@@ -25,7 +25,9 @@ import org.disl.pattern.AbstractExecutable
 import org.disl.pattern.Executable
 
 import groovy.transform.CompileStatic;
-import groovy.util.logging.Slf4j;
+import groovy.util.logging.Slf4j
+import org.disl.util.printFormat.JobMsgHelper
+
 /**
  * Job executes list of job entries in serial order.
  * */
@@ -158,18 +160,7 @@ abstract class Job extends AbstractExecutable {
 	}
 
 	public String getExecutionSummaryMessage() {
-		String name=toString().padRight(50).toString().substring(0,50)
-		String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
-		String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
-		String processedRows=executionInfo.processedRows.toString().padLeft(10).toString().substring(0,10)
-		return """ Execution results for ${name}:
-*********************************************************************************************
-*  Name                                              *   Status   *  Time (ms)*        Rows *
-*********************************************************************************************
-* ${name} * ${stat} * ${dur} * ${processedRows} *
-*********************************************************************************************
-${jobEntries.join('\n')}
-*********************************************************************************************
-"""
+		JobMsgHelper jobMsgFormat = new JobMsgHelper()
+		return jobMsgFormat.getExecutionSummaryMessage(name.toString(), executionInfo, jobEntries)
 	}
 }

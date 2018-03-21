@@ -29,9 +29,9 @@ import org.junit.Before
 import org.junit.Test
 
 class TestJob extends DislTestCase {
-	
+
 	@Before
-    void init() {
+	void init() {
 		Context.setContextName("disl-test")
 		Context.getContext().setExecutionMode('testing')
 	}
@@ -39,32 +39,55 @@ class TestJob extends DislTestCase {
 	@Test
 	public void testTestingJobSimpleMappingNoDependency() {
 		def job = new TestingJobSimpleMappingNoDependency()
-		Assert.assertArrayEquals(job.jobEntries.collect{it.executable.class.simpleName}.toArray(),["MappingMaterialized"].toArray())
+		Assert.assertArrayEquals(job.jobEntries.collect {
+			it.executable.class.simpleName
+		}.toArray(), ["MappingMaterialized"].toArray())
 	}
 
 	@Test
 	public void testTestingJobSimpleMappingDependency() {
 		def job = new TestingJobSimpleMappingDependency()
-		Assert.assertArrayEquals(job.jobEntries.collect{it.executable.class.simpleName}.toArray(),["MappingMaterialized"].toArray())
+		Assert.assertArrayEquals(job.jobEntries.collect {
+			it.executable.class.simpleName
+		}.toArray(), ["MappingMaterialized"].toArray())
 	}
 
 
 	@Test
 	public void testTestingJobWithStgMappingNoDependency() {
 		def job = new TestingJobWithStgMappingNoDependency()
-		Assert.assertArrayEquals(job.jobEntries.collect{it.executable.class.simpleName}.toArray(),["MappingIntoTable"].toArray())
+		Assert.assertArrayEquals(job.jobEntries.collect {
+			it.executable.class.simpleName
+		}.toArray(), ["MappingIntoTable"].toArray())
 	}
 
 	@Test
 	public void testTestingJobWithStgMappingDependency() {
 		def job = new TestingJobWithStgMappingDependency()
-		Assert.assertArrayEquals(job.jobEntries.collect{it.executable.class.simpleName}.toArray(),["MappingMaterialized","MappingIntoTable"].toArray())
+		Assert.assertArrayEquals(job.jobEntries.collect {
+			it.executable.class.simpleName
+		}.toArray(), ["MappingMaterialized", "MappingIntoTable"].toArray())
 	}
 
 	@Test
 	public void testTestingJobWithStgMappingDependencyPrune() {
 		def job = new TestingJobWithStgMappingDependencyPrune()
-		Assert.assertArrayEquals(job.jobEntries.collect{it.executable.class.simpleName}.toArray(),["MappingMaterialized","MappingIntoTable"].toArray())
+		Assert.assertArrayEquals(job.jobEntries.collect {
+			it.executable.class.simpleName
+		}.toArray(), ["MappingMaterialized", "MappingIntoTable"].toArray())
+		job.executionInfo.start()
+		job.executionInfo.finish()
+		job.executionInfo.endTime = job.executionInfo.startTime + 100000
+		println job.getExecutionSummaryMessage()
+	}
+
+	@Test
+	void testPrintingExecutionSummaryMessage() {
+		def job = new TestingJobWithStgMappingDependencyPrune()
+		job.executionInfo.start()
+		job.executionInfo.finish()
+		job.executionInfo.endTime = job.executionInfo.startTime + (1000L*60*60*26+23)
+		println job.getExecutionSummaryMessage()
 	}
 
 	static class TestingJobSimpleMappingNoDependency extends Job {
@@ -103,7 +126,8 @@ class TestJob extends DislTestCase {
 	static class TestingJobWithStgMappingDependencyPrune extends Job {
 		def tab1 = MetaFactory.create(TestMappingMaterialized.MappingIntoTable)
 		def tab2 = MetaFactory.create(TestDependency.Tab2)
-		Dependency dependency = new Dependency([tab1,tab2]).prune([TestMappingMaterialized.MappingIntoTable])
+		Dependency dependency = new Dependency([tab1, tab2]).prune([TestMappingMaterialized.MappingIntoTable])
+
 		TestingJobWithStgMappingDependencyPrune() {
 			autoAddDependencies = true
 			addAll(dependency.getMembers())

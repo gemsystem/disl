@@ -19,7 +19,8 @@
 package org.disl.workflow;
 
 import org.disl.pattern.Executable;
-import org.disl.pattern.ExecutionInfo;
+import org.disl.pattern.ExecutionInfo
+import org.disl.util.printFormat.JobMsgHelper
 
 class JobEntry implements Executable {
 	
@@ -38,11 +39,8 @@ class JobEntry implements Executable {
 	}
 	
 	String toString() {
-		String name=executable.toString().padRight(50).toString().substring(0,50)
-		String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
-		String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
-		String processedRows=executionInfo.processedRows.toString().padLeft(10).toString().substring(0,10)
-		return "* ${name} * ${stat} * ${dur} * ${processedRows} *"			
+		JobMsgHelper jobMsgFormat = new JobMsgHelper()
+		return jobMsgFormat.getExecutionSummaryMessageEntry(executable.toString(), executionInfo)
 	}
 	
 }
