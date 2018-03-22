@@ -26,7 +26,7 @@ import org.disl.pattern.Executable
 
 import groovy.transform.CompileStatic;
 import groovy.util.logging.Slf4j
-import org.disl.util.printFormat.JobMsgHelper
+import org.disl.util.jenkins.JobMsgHelper
 
 /**
  * Job executes list of job entries in serial order.

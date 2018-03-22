@@ -20,7 +20,7 @@ package org.disl.workflow;
 
 import org.disl.pattern.Executable;
 import org.disl.pattern.ExecutionInfo
-import org.disl.util.printFormat.JobMsgHelper
+import org.disl.util.jenkins.JobMsgHelper
 
 class JobEntry implements Executable {
 	

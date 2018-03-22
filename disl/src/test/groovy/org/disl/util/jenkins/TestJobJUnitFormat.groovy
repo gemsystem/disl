@@ -81,15 +81,15 @@ class TestJobJUnitFormat extends DislTestCase {
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuite>
 \t<testcase name="executionSummary" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.!Summary" time="0"><system-out><![CDATA[ Execution results for SampleJob                                         :
-*********************************************************************************************
-*  Name                                              *   Status   *  Time (ms)*        Rows *
-*********************************************************************************************
-* SampleJob                                          *      ERROR *       5000 *          0 *
-*********************************************************************************************
-* SampleExecutable1                                  *   FINISHED *       2000 *          2 *
-* SampleExecutable2                                  *   FINISHED *       2000 *          1 *
-* SampleExecutable3                                  *      ERROR *       1000 *          0 *
-*********************************************************************************************
+************************************************************************************************************
+* Name                                               *   Status   *  Time (ms) *     Time     *       Rows *
+************************************************************************************************************
+* SampleJob                                          *      ERROR *       5000 * 00:00:05.000 *          0 *
+************************************************************************************************************
+* SampleExecutable1                                  *   FINISHED *       2000 * 00:00:02.000 *          2 *
+* SampleExecutable2                                  *   FINISHED *       2000 * 00:00:02.000 *          1 *
+* SampleExecutable3                                  *      ERROR *       1000 * 00:00:01.000 *          0 *
+************************************************************************************************************
 ]]></system-out></testcase>
 \t<testcase name="1_Step1" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.1_SampleExecutable1" time="1"><system-out><![CDATA[Step1 code.]]></system-out></testcase>
 \t<testcase name="2_Step2" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.1_SampleExecutable1" time="1"><system-out><![CDATA[Step2 code.]]></system-out></testcase>
