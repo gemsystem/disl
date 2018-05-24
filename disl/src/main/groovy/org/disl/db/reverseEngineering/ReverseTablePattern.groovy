@@ -20,10 +20,9 @@ package org.disl.db.reverseEngineering
 
 import groovy.json.StringEscapeUtils
 import org.disl.meta.Column
-import org.disl.meta.Table
 import org.disl.pattern.FileOutputStep
-import org.disl.pattern.Pattern
 import org.disl.pattern.TablePattern
+
 /**
  * Pattern for generating source code for DISL data model table.
  * */
@@ -45,7 +44,7 @@ class ReverseTablePattern extends TablePattern<ReverseEngineeredTable> {
 	
 	File getFile() {
 		File directory=new File(outputDir,packageName.replace('.', '/'))
-		new File(directory,"${table.name}.groovy")
+		new File(directory,"${CreateDislTable.tableName(table.name)}.groovy")
 	}
 
 	@Override
@@ -69,8 +68,51 @@ class ReverseTablePattern extends TablePattern<ReverseEngineeredTable> {
 			}
 			return ''
 		}
+		Boolean isColumnSpecialName(String name) {
+			if (name.contentEquals("Name")) return true
+			if (name.contentEquals("name")) return true
+			if (name.contentEquals("Class")) return true
+			if (name.contentEquals("class")) return true
+			return !name.matches("[a-zA-Z_][a-zA-Z0-9_]*")
+		}
 
-		String escape(String text) {
+		String realColumnName(String name) {
+			if (isColumnSpecialName(name)) {
+				return """\n\t\t@Name(\"\"\"${escape(name)}\"\"\")"""
+			} else {
+				return ''
+			}
+		}
+
+		String columnName(String name) {
+			if (isColumnSpecialName(name)) {
+				return "${name.toUpperCase().replaceAll('[^a-zA-Z0-9]', '_')}"
+			} else {
+				return name
+			}
+		}
+
+		static Boolean isTableSpecialName(String name) {
+			return !name.matches("[A-Z][a-zA-Z0-9]*")
+		}
+
+		static String realTableName(String name) {
+			if (isTableSpecialName(name)) {
+				return "@Name(\"\"\"${escape(name)}\"\"\")"
+			} else {
+				return ''
+			}
+		}
+
+		static String tableName(String name) {
+			if (isTableSpecialName(name)) {
+				return "${name.toUpperCase().replaceAll('[^A-Z0-9]', '_')}"
+			} else {
+				return name
+			}
+		}
+
+		static String escape(String text) {
 			return StringEscapeUtils.escapeJava(text)
 		}
 		
@@ -80,9 +122,9 @@ package $pattern.packageName
 
 import org.disl.meta.*
 
-${description(pattern.table.description)}$foreignKeyDefinition
+${description(pattern.table.description)}${realTableName(pattern.table.name)}$foreignKeyDefinition
 @groovy.transform.CompileStatic
-class $pattern.table.name extends ${pattern.parentClassName} {
+class ${tableName(pattern.table.name)} extends ${pattern.parentClassName} {
 
 $columnDefinitions
 }"""
@@ -105,23 +147,9 @@ $columnDefinitions
 		String primaryKey =column.primaryKey?"\n\t\t@PrimaryKey":""
 		
 		"""\
-		${description(column.description)}
+		${description(column.description)}${realColumnName(column.name)}
 		@DataType("$column.dataType")$primaryKey$notNull
-		Column $column.name"""
+		Column ${columnName(column.name)}"""
 		}
-	
-		
-		
 	}
-
-
 }
-
-
-
-
-
-
-
-
- 
