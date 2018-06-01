@@ -205,9 +205,6 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	public String getName() {
 		String leftParenthesisTableName=Context.getContext().getProperty('leftParenthesisTableName')
 		String rightParenthesisTableName=Context.getContext().getProperty('rightParenthesisTableName')
-		if (nameWithoutParenthesis==null) {
-			return "${leftParenthesisTableName?:''}${this.getClass().getSimpleName()}${rightParenthesisTableName?:''}"
-		}
 		"${leftParenthesisTableName?:''}${nameWithoutParenthesis}${rightParenthesisTableName?:''}"
 	}
 }
