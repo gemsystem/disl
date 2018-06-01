@@ -78,12 +78,17 @@ abstract class Base implements Comparable<Base>,Initializable {
 		}
 	}
 
+	String getNameWithoutParenthesis() {
+		this.@name
+	}
 
 	public String getName() {
-		if (name==null) {
-			return this.getClass().getSimpleName()
+		String leftParenthesisBaseName=Context.getContext().getProperty('leftParenthesisBaseName')
+		String rightParenthesisBaseName=Context.getContext().getProperty('rightParenthesisBaseName')
+		if (nameWithoutParenthesis==null) {
+			return "${leftParenthesisBaseName?:''}${this.getClass().getSimpleName()}${rightParenthesisBaseName?:''}"
 		}
-		name
+		"${leftParenthesisBaseName?:''}${nameWithoutParenthesis}${rightParenthesisBaseName?:''}"
 	}
 	
 	public String toString() {

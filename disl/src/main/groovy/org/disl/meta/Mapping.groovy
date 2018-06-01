@@ -439,13 +439,13 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	public void traceInitialColumnMapping() {
 		if (columns.size()==0) {
 			sources.each {
-				it.columns.each {println getInitialMapping(it.name)}
+				it.columns.each {println getInitialMapping(it)}
 			}
 		}
 	}
 
-	String getInitialMapping(String columnName) {
-		"ColumnMapping $columnName=e ${findSourceAlias(columnName)}.$columnName"
+	String getInitialMapping(Column column) {
+		"ColumnMapping ${column.nameWithoutParenthesis}=e ${findSourceAlias(column.getName())}.${column.getName()}"
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)

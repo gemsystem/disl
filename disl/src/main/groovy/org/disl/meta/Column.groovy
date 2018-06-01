@@ -48,12 +48,20 @@ class Column extends AbstractSqlExpression {
 	PhysicalSchema getPhysicalSchema() {
 		Context.getContext().getPhysicalSchema(getParent().getSchema())
 	}
-	
 
+	String getNameWithoutParenthesis() {
+		this.@name
+	}
+
+	String getName() {
+		String leftParenthesisColumnName=Context.getContext().getProperty('leftParenthesisColumnName')
+		String rightParenthesisColumnName=Context.getContext().getProperty('rightParenthesisColumnName')
+		"${leftParenthesisColumnName?:''}${nameWithoutParenthesis}${rightParenthesisColumnName?:''}"
+	}
 	
 	String toString(){
 		if (parent==null || parent.getSourceAlias()==null) {
-			return name
+			return getName()
 		}
 		"${parent.getSourceAlias()}.${getName()}"
 	}
