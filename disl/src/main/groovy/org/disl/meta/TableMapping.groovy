@@ -52,7 +52,7 @@ abstract class TableMapping<T extends Table> extends Mapping implements Executab
 			Column targetColumn=it
 			boolean unmapped=true
 			this.columns.each {  
-				if (it.getAlias().equals(targetColumn.name)) {
+				if (it.getAlias().equals(targetColumn.nameWithoutParenthesis)) {
 					unmapped=false
 					return
 				}
@@ -66,7 +66,7 @@ abstract class TableMapping<T extends Table> extends Mapping implements Executab
 			ColumnMapping columnMapping=it
 			boolean missing=true
 			target.columns.each {
-				if (it.name.equals(columnMapping.alias)) {
+				if (it.nameWithoutParenthesis.equals(columnMapping.alias)) {
 					missing=false
 				}
 			}

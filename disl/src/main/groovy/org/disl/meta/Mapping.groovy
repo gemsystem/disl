@@ -452,7 +452,13 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	String findSourceAlias(String columnName) {
 		String sourceAlias='src'
 		getSources().each {
-			def c = it.columns.find { it.name.equals(columnName) }
+			def c = it.columns.find {
+				if (it instanceof ColumnMapping) {
+					return it.alias.equals(columnName)
+				} else {
+					return it.name.equals(columnName)
+				}
+			}
 			if (c) {
 				sourceAlias=it.sourceAlias
 			}
