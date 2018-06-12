@@ -59,6 +59,7 @@ abstract class Lookup extends MappingSource {
 			this[f.getName()]=column
 		}
 		column.setName(f.getName());
+		column.setPropertyName(f.getName())
 		columns.add(column)
 	}
 

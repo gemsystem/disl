@@ -87,7 +87,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	}
 
 	private Column createColumn(String name) {
-		Column c=new Column(name, this)
+		Column c=new Column(name, name, this)
 		columns.add(c)
 		c
 	}
@@ -145,6 +145,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 			columns.add(column)
 		}
 
+		column.setPropertyName(f.getName())
 		Name realColumnName=f.getAnnotation(Name)
 		if (realColumnName!=null) {
 			column.setName(realColumnName.value())
@@ -195,6 +196,10 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 	public Iterable<String> getColumnDefinitions() {
 		columns.collect {it.columnDefinition}
+	}
+
+	public Column getColumn(String propertyName) {
+		columns.find {it.propertyName.contentEquals(propertyName)}
 	}
 	
 	public List<Column> getPrimaryKeyColumns() {

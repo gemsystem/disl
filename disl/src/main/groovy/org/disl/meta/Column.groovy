@@ -25,6 +25,7 @@ import groovy.transform.CompileStatic;
  * */
 @CompileStatic
 class Column extends AbstractSqlExpression {
+	String propertyName
 	String name
 	MappingSource parent
 	String description
@@ -36,7 +37,8 @@ class Column extends AbstractSqlExpression {
 
 	Column(){}
 	
-	Column(String name,Table parent) {
+	Column(String propertyName, String name,Table parent) {
+		this.propertyName=propertyName
 		this.name=name
 		this.parent=parent
 	}
