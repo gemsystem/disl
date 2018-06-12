@@ -445,7 +445,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	String getInitialMapping(Column column) {
-		"ColumnMapping ${column.nameWithoutParenthesis}=e ${findSourceAlias(column.getName())}.${column.getName()}"
+		"ColumnMapping ${column.propertyName}=e ${findSourceAlias(column.getName())}.${column.propertyName}"
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
