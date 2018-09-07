@@ -34,8 +34,8 @@ abstract class TableMappingMaterialized extends TableMapping {
     public abstract MappingPattern getPattern()
     public abstract String getFullName()
 
-    List<String> primaryKeyColumns =[]
-    List<String> notNullColumns =[]
+    List<String> primaryKeyColumns;
+    List<String> notNullColumns;
 
     @Override
     protected void initDescription() {
@@ -48,6 +48,7 @@ abstract class TableMappingMaterialized extends TableMapping {
         getFieldsByType(ColumnMapping).each {
             PrimaryKey primaryKey = it.getAnnotation(PrimaryKey)
             if (primaryKey) {
+                if (this.primaryKeyColumns == null) this.primaryKeyColumns = []
                 this.primaryKeyColumns.add(it.name)
             }
         }
@@ -57,6 +58,7 @@ abstract class TableMappingMaterialized extends TableMapping {
         getFieldsByType(ColumnMapping).each {
             NotNull notNull = it.getAnnotation(NotNull)
             if (notNull) {
+                if (this.notNullColumns == null) this.notNullColumns = []
                 this.notNullColumns.add(it.name)
             }
         }
