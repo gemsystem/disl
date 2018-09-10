@@ -33,6 +33,7 @@ class MssqlSchema extends PhysicalSchema {
 	String host
 	int port
 	String instance
+	String domain
 
 	String jdbcDriver="net.sourceforge.jtds.jdbc.Driver"
 	
@@ -43,13 +44,21 @@ class MssqlSchema extends PhysicalSchema {
 		port=Integer.parseInt(getSchemaProperty('port','1433'))
 		databaseName=getSchemaProperty('databaseName')
 		instance=getSchemaProperty('instance')
+		domain=getSchemaProperty('domain')
 	}
 
 	public String getJdbcUrl() {
-		if (getInstance()==null) {
-			return "jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};user=${getUser()};password=${getPassword()};"	
+		String instanceElement=""
+		if (getInstance()!=null) {
+			instanceElement=";instance=${getInstance()}"
 		}
-		"jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};instance=${getInstance()};user=${getUser()};password=${getPassword()};"		
+		String domainElement=""
+		if (getDomain()!=null) {
+			domainElement=";domain=${getDomain()}"
+		}
+		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()};"
+		println myUrl
+		return myUrl
 	}
 
 	@Override
