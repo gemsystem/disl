@@ -57,7 +57,7 @@ class MssqlSchema extends PhysicalSchema {
 			domainElement=";domain=${getDomain()}"
 		}
 		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()};"
-		println myUrl
+		//println myUrl
 		return myUrl
 	}
 
