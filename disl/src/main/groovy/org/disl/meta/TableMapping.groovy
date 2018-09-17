@@ -51,10 +51,12 @@ abstract class TableMapping<T extends Table> extends Mapping implements Executab
 		return getTarget().getColumns().findAll {
 			Column targetColumn=it
 			boolean unmapped=true
-			this.columns.each {  
-				if (this.target.getColumn(it.alias).nameWithoutParenthesis.equals(targetColumn.nameWithoutParenthesis)) {
-					unmapped=false
-					return
+			this.columns.each {
+				if (this.target.getColumn(it.alias)) { //column may not exists in target
+					if (this.target.getColumn(it.alias).nameWithoutParenthesis.equals(targetColumn.nameWithoutParenthesis)) {
+						unmapped = false
+						return
+					}
 				}
 			}
 			return unmapped
@@ -66,7 +68,7 @@ abstract class TableMapping<T extends Table> extends Mapping implements Executab
 			ColumnMapping columnMapping=it
 			boolean missing=true
 			target.columns.each {
-				if (it.nameWithoutParenthesis.equals(this.target.getColumn(columnMapping.alias).nameWithoutParenthesis)) {
+				if (it.nameWithoutParenthesis.equals(this.target.getColumn(columnMapping.alias)?.nameWithoutParenthesis)) {
 					missing=false
 				}
 			}

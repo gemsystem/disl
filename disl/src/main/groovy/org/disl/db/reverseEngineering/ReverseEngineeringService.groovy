@@ -87,7 +87,7 @@ class ReverseEngineeringService {
 		tables.each {
 			Table table=it
 			try {
-				res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, table.getName(), null)
+				res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, table.getNameWithoutParenthesis(), null)
 				eachRow(res,{
 					String description=it.REMARKS
 					if ('null'.equals(description)) {
