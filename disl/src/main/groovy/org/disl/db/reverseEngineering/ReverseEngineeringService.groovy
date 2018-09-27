@@ -20,6 +20,7 @@ package org.disl.db.reverseEngineering
 
 import groovy.sql.GroovyResultSet
 import groovy.sql.GroovyResultSetProxy
+import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j;
 
@@ -82,7 +83,14 @@ class ReverseEngineeringService {
 	public List<Table> reverseEngineerTables(Sql sql,String tablePattern, String tableTypes,String sourceSchemaFilterPattern,String catalog=null) {
 		ResultSet res=sql.getConnection().getMetaData().getTables(catalog, sourceSchemaFilterPattern, tablePattern, tableTypes)
 		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
-		List<Table> tables=collectRows(res,{new ReverseEngineeredTable(name: it.TABLE_NAME,description: it.REMARKS, schema:logicalSchemaName, physicalSchema: it.TABLE_SCHEM)})
+		List<Table> tables=collectRows(res,{
+			String description=it.REMARKS
+			if (Context.getContext().getProperty(logicalSchemaName).contentEquals("Mssql")) {
+				GroovyRowResult rowRemark=sql.firstRow("SELECT cast(value as varchar) as txt FROM fn_listextendedproperty ('MS_DESCRIPTION','schema', ?, 'table', ?, null, null)",[it.TABLE_SCHEM, it.TABLE_NAME]);
+				if(rowRemark) description=rowRemark.getAt(0)
+			}
+			new ReverseEngineeredTable(name: it.TABLE_NAME,description: description, schema:logicalSchemaName, physicalSchema: it.TABLE_SCHEM)
+		})
 		res.close()
 		tables.each {
 			Table table=it
@@ -90,6 +98,10 @@ class ReverseEngineeringService {
 				res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, table.getNameWithoutParenthesis(), null)
 				eachRow(res,{
 					String description=it.REMARKS
+					if (Context.getContext().getProperty(logicalSchemaName).contentEquals("Mssql")) {
+						GroovyRowResult rowRemark=sql.firstRow("SELECT cast(value as varchar) as txt FROM fn_listextendedproperty ('MS_DESCRIPTION','schema', ?, 'table', ?, 'column', ?)",[it.TABLE_SCHEM, it.TABLE_NAME, it.COLUMN_NAME]);
+						if(rowRemark) description=rowRemark.getAt(0)
+					}
 					if ('null'.equals(description)) {
 						description=null
 					}
