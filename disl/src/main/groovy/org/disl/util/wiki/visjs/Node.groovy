@@ -37,7 +37,7 @@ class Node {
 
 
     Node(Table t) {
-        id = t.class.name
+        id = t.class.name.replace("\$","")
         label = t.name
         title = t.description
         if (t.getPattern()!=null) {
@@ -61,7 +61,7 @@ class Node {
     }
 
     Node(Mapping m) {
-        id = m.class.name
+        id = m.class.name.replace("\$","")
         label = m.name
         title = m.description
         color = 'LightGreen'
@@ -70,7 +70,7 @@ class Node {
     }
 
     Node(Lookup l) {
-        id = l.class.name
+        id = l.class.name.replace("\$","")
         label = l.name
         title = l.description
         color = 'DarkGreen'

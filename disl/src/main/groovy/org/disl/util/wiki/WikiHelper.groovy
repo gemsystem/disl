@@ -64,7 +64,7 @@ class WikiHelper extends MetaManager {
     }
 
     static String fileName(String className) {
-        "${className.toLowerCase().replace('.','/')}"
+        "${className.toLowerCase().replace('.','/').replace("\$","")}"
     }
 
      static File getLineageDataFile(String className) {
@@ -218,28 +218,28 @@ class WikiHelper extends MetaManager {
     }
 
     void addLineageSourceUsage(Mapping sourceMapping, Mapping mapping) {
-        Set<LineageNode> l=mappingLineageUsage.get(sourceMapping.class.name)
+        Set<LineageNode> l=mappingLineageUsage.get(sourceMapping.class.name.replace("\$",""))
         if (!l) {
             l=new HashSet<LineageNode>()
-            mappingLineageUsage.put(sourceMapping.class.name,l)
+            mappingLineageUsage.put(sourceMapping.class.name.replace("\$",""),l)
         }
         l.add(new LineageNode(mapping,0))
     }
 
     void addMappingTargetUsage(Mapping sourceMapping, Table targetTable) {
-        Set<LineageNode> l=mappingTargetUsage.get(targetTable.class.name)
+        Set<LineageNode> l=mappingTargetUsage.get(targetTable.class.name.replace("\$",""))
         if (!l) {
             l=new HashSet<LineageNode>()
-            mappingTargetUsage.put(targetTable.class.name,l)
+            mappingTargetUsage.put(targetTable.class.name.replace("\$",""),l)
         }
         l.add(new LineageNode(sourceMapping,2))
     }
 
     void addLineageSourceUsage(Table sourceTable, Mapping mapping) {
-        Set<LineageNode> l=tableLineageUsage.get(sourceTable.class.name)
+        Set<LineageNode> l=tableLineageUsage.get(sourceTable.class.name.replace("\$",""))
         if (!l) {
             l=new HashSet<LineageNode>()
-            tableLineageUsage.put(sourceTable.class.name,l)
+            tableLineageUsage.put(sourceTable.class.name.replace("\$",""),l)
         }
         l.add(new LineageNode(mapping,0))
     }
