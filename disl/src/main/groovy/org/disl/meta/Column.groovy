@@ -34,6 +34,7 @@ class Column extends AbstractSqlExpression {
 	String check
 	boolean notNull=false
 	boolean primaryKey = false
+	List<String> uiFields = []
 
 	Column(){}
 	

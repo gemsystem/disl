@@ -55,7 +55,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	public String getSchema() {
 		'default'
 	}
-	
+
 	@Override
 	public String getRefference() {
 		String alias=""
@@ -64,7 +64,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		}
 		return "${fullName}${alias}"
 	}
-	
+
 	String getRefferenceColumnList() {
 		getColumns().collect {"${it.name}"}.join(",")
 	}
@@ -115,7 +115,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 		initPattern()
 	}
-	
+
 
 	protected void initPattern() {
 		initPatternField()
@@ -177,21 +177,26 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		if (notNull) {
 			column.setNotNull(true)
 		}
-		
+
 		DefaultValue defaultValue=f.getAnnotation(DefaultValue)
 		if (defaultValue) {
 			column.setDefaultValue(defaultValue.value())
 		}
-		
+
 		Check check=f.getAnnotation(Check)
 		if (check) {
 			column.setCheck(check.value())
 		}
+
+		UIMapping uiMappings = f.getAnnotation(UIMapping)
+		if (uiMappings) {
+			column.setUiFields(uiMappings.value().toList())
+		}
 	}
-	
+
 	@CompileStatic(TypeCheckingMode.SKIP)
 	void initDefaultMapping(Column column, String defaultMapping) {
-		column.setDefaultMapping(defaultMapping)		
+		column.setDefaultMapping(defaultMapping)
 	}
 
 	public Iterable<String> getColumnDefinitions() {
@@ -201,7 +206,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	public Column getColumn(String propertyName) {
 		columns.find {it.propertyName.contentEquals(propertyName)}
 	}
-	
+
 	public List<Column> getPrimaryKeyColumns() {
 		(List<Column>)columns.findAll {it.isPrimaryKey()}
 	}
