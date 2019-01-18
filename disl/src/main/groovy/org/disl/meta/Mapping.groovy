@@ -39,7 +39,6 @@ import org.disl.pattern.MappingPattern
  * This class implements early initialization for all fields of types assignable from MappingSource.
  * This enables to reference MappingSources in initializers of ColumnMapping fields.
  * */
-@CompileStatic
 abstract class Mapping  extends MappingSource implements Initializable,Executable {
 	/**
 	 * Since this is first field in this class definition, it ensures doEarlyInit() method is called before next fields are intialized.
@@ -259,6 +258,10 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		setOperations.add(new SetOperation.MINUS(source: source))
 	}
 
+	public void except(MappingSource source) {
+		setOperations.add(new SetOperation.EXCEPT(source: source))
+	}
+
 	public void intersect(MappingSource source) {
 		setOperations.add(new SetOperation.INTERSECT(source: source))
 	}
@@ -327,7 +330,24 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	String getSQLQuery() {
-		"""\
+		if (setOperations.size()>0) {
+			return """\
+	/*Mapping ${name}*/
+		SELECT
+			${getQueryColumnList()}
+		FROM
+		(
+		SELECT ${SetOperation.getExpandedOrderedColumnList(getAllRefferencedColumns(),getColumnsStr())}
+		FROM
+			${getSources().collect({it.fromClause}).join("\n			")}
+		${getSetOperationClause()}
+		) ${getSources().get(0).sourceAlias}
+		WHERE
+			${filter}
+		${getGroupByClause()}${getHavingClause()}${getOrderByClause()}
+	/*End of mapping $name*/"""
+		} else {
+			"""\
 	/*Mapping ${name}*/
 		SELECT
 			${getQueryColumnList()}
@@ -337,14 +357,19 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 			${filter}
 		${getGroupByClause()}${getHavingClause()}${getOrderByClause()}${getSetOperationClause()}
 	/*End of mapping $name*/"""
+		}
+	}
+
+	List<String> getColumnsStr() {
+		getColumns().collect{"$it".toString()}
 	}
 
 	String getQueryColumnList() {
 		getColumns().collect {"${it.getAliasedMappingExpression()}"}.join(",\n			")
 	}
-	
-	String getRefferenceColumnList() {
-		getColumns().collect {"${it.alias}"}.join(",")
+
+	List<String> getRefferenceColumnsStr() {
+		getColumns().collect {"${it.alias}".toString()}
 	}
 
 	Collection<String> getTargetColumnNames() {
@@ -368,11 +393,16 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		return ""
 	}
 
+	List<String> getAllRefferencedColumns() {
+		List<String> allRefferenceColumns = this.columns.collect{"$it".toString()}
+		setOperations.each {allRefferenceColumns.addAll(it.source.getRefferenceColumnsStr())}
+		allRefferenceColumns.unique()
+		return allRefferenceColumns
+	}
+
+
 	String getSetOperationClause() {
-		if (setOperations.size()>0) {
-			return "\n\t"+setOperations.collect {it.getSetOperationClause()}.join("\n\t")
-		}
-		return ""
+		return setOperations.collect {it.getSetOperationClause(getAllRefferencedColumns())}.join("\n\t")
 	}
 
 	/**

@@ -21,6 +21,7 @@ package org.disl.meta
 import static org.junit.Assert.*
 
 import org.disl.meta.TestMapping.TestingMapping
+import org.disl.meta.TestMapping.FewColsMapping
 import org.disl.test.DislTestCase
 import org.junit.Before
 import org.junit.Test
@@ -31,7 +32,7 @@ class TestSetOperationMapping extends DislTestCase {
 		String schema="L2"
 
 		TestingMapping subquery1
-		TestingMapping subquery2
+		FewColsMapping subquery2
 
 		ColumnMapping A=e "$subquery1.A"
 		ColumnMapping c=e "C"
@@ -55,6 +56,9 @@ class TestSetOperationMapping extends DislTestCase {
 			C as c,
 			subquery1.B as B
 		FROM
+		(
+		SELECT A,c,B,null X
+		FROM
 			(
 	/*Mapping TestingMapping*/
 		SELECT
@@ -75,52 +79,37 @@ class TestSetOperationMapping extends DislTestCase {
 		HAVING
 			min(s1.A)='xxx'
 	/*End of mapping TestingMapping*/) subquery1
+		UNION select A,null c,null B,X from (
+	/*Mapping FewColsMapping*/
+		SELECT
+			s1.A as A,
+			2 as X
+		FROM
+			PUBLIC.TESTING_TABLE s1
 		WHERE
 			1=1
 		
-	UNION select A,c,B from (
-	/*Mapping TestingMapping*/
-		SELECT
-			s1.A as A,
-			C as c,
-			REPEAT(s2.B,3) as B
-		FROM
-			PUBLIC.TESTING_TABLE s1
-			INNER JOIN PUBLIC.TESTING_TABLE s2  ON (s1.A=s2.A)
-			LEFT OUTER JOIN PUBLIC.TESTING_TABLE s3  ON (s2.A=s3.A)
-			RIGHT OUTER JOIN PUBLIC.TESTING_TABLE s4  ON (s2.A=s4.A)
-			FULL OUTER JOIN PUBLIC.TESTING_TABLE s5  ON (s2.A=s5.A)
-			CROSS JOIN PUBLIC.TESTING_TABLE s6
+	/*End of mapping FewColsMapping*/) subquery2
+		) subquery1
 		WHERE
-			s1.A=s1.A
-		GROUP BY
-			s1.A,C,REPEAT(s2.B,3)
-		HAVING
-			min(s1.A)='xxx'
-	/*End of mapping TestingMapping*/) subquery2
+			1=1
+		
 	/*End of mapping TestingSetOperationMapping*/""", mapping.getSQLQuery())
 	}
 
 	@Test
 	void testGetSetOperationClause() {
-		assertEquals("""\n\tUNION select A,c,B from (\n	/*Mapping TestingMapping*/
+		assertEquals("""\
+UNION select A,null c,null B,X from (
+	/*Mapping FewColsMapping*/
 		SELECT
 			s1.A as A,
-			C as c,
-			REPEAT(s2.B,3) as B
+			2 as X
 		FROM
 			PUBLIC.TESTING_TABLE s1
-			INNER JOIN PUBLIC.TESTING_TABLE s2  ON (s1.A=s2.A)
-			LEFT OUTER JOIN PUBLIC.TESTING_TABLE s3  ON (s2.A=s3.A)
-			RIGHT OUTER JOIN PUBLIC.TESTING_TABLE s4  ON (s2.A=s4.A)
-			FULL OUTER JOIN PUBLIC.TESTING_TABLE s5  ON (s2.A=s5.A)
-			CROSS JOIN PUBLIC.TESTING_TABLE s6
 		WHERE
-			s1.A=s1.A
-		GROUP BY
-			s1.A,C,REPEAT(s2.B,3)
-		HAVING
-			min(s1.A)='xxx'
-	/*End of mapping TestingMapping*/) subquery2""",mapping.getSetOperationClause())
+			1=1
+		
+	/*End of mapping FewColsMapping*/) subquery2""",mapping.getSetOperationClause())
 	}
 }

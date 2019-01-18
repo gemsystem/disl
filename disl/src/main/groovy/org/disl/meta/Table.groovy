@@ -65,8 +65,8 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		return "${fullName}${alias}"
 	}
 	
-	String getRefferenceColumnList() {
-		getColumns().collect {"${it.name}"}.join(",")
+	List<String> getRefferenceColumnsStr() {
+		getColumns().collect {"${it.name}".toString()}
 	}
 
 	public String getFullName() {

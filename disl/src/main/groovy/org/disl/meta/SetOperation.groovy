@@ -27,35 +27,51 @@ import groovy.transform.CompileStatic
 public abstract class SetOperation {
 	
 	MappingSource source
-	
-	public abstract String getSetOperationClause();
-	
-	protected String getSourceQuery() {
-		"select ${source.getRefferenceColumnList()} from ${source.getRefference()}"
+
+	public abstract String getSetOperationClause(List<String> allReferencedColumns);
+
+	static String getExpandedOrderedColumnList(List<String> allReferencedColumns, List<String> refferencedColumns) {
+		List<String> nullCols=allReferencedColumns.minus(refferencedColumns)
+		allReferencedColumns.collect{
+			if (nullCols.contains(it)) {
+				return "null $it"
+			}
+			return it
+		}.join(",")
+	}
+
+	protected String getSourceQuery(List<String> allReferencedColumns) {
+		"select ${getExpandedOrderedColumnList(allReferencedColumns,source.getRefferenceColumnsStr())} from ${source.getRefference()}"
 	}
 	
 	static class UNION extends SetOperation {
 		@Override
-		public String getSetOperationClause() {
-			"UNION ${sourceQuery}"
+		public String getSetOperationClause(List<String> allReferencedColumns) {
+			"UNION ${getSourceQuery(allReferencedColumns)}"
 		}
 	}
 	static class UNION_ALL extends SetOperation {
 		@Override
-		public String getSetOperationClause() {
-			"UNION ALL ${sourceQuery}"
+		public String getSetOperationClause(List<String> allReferencedColumns) {
+			"UNION ALL ${getSourceQuery(allReferencedColumns)}"
 		}
 	}
 	static class INTERSECT extends SetOperation {
 		@Override
-		public String getSetOperationClause() {
-			"INTERSECT ${sourceQuery}"
+		public String getSetOperationClause(List<String> allReferencedColumns) {
+			"INTERSECT ${getSourceQuery(allReferencedColumns)}"
 		}
 	}
 	static class MINUS extends SetOperation {
 		@Override
-		public String getSetOperationClause() {
-			"MINUS ${sourceQuery}"
+		public String getSetOperationClause(List<String> allReferencedColumns) {
+			"MINUS ${getSourceQuery(allReferencedColumns)}"
+		}
+	}
+	static class EXCEPT extends SetOperation {
+		@Override
+		public String getSetOperationClause(List<String> allReferencedColumns) {
+			"EXCEPT ${getSourceQuery(allReferencedColumns)}"
 		}
 	}
 
