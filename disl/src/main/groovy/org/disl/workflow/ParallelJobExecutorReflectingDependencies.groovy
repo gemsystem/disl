@@ -184,6 +184,9 @@ class ParallelJobExecutorReflectingDependencies {
         void execute(Job job) {
             List<Future> parallelFutures = submitParallelJobTasks(job.getJobEntries())
             addTasks(job)
+            if (fileName != null) {
+                log.info("Fixed location of dependency chart: ${(new File(fileName)).toURI()}")
+            }
 
             while (getNotStartedTasks().size() > 0 || getRunningTasks().size() > 0) {
                 submitTasks()

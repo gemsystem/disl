@@ -46,7 +46,9 @@ class DependencyDrawChart {
         }
         writer.write(getChart());
         writer.close()
-        log.info("Location of dependency chart: ${file.toURI()}")
+        if (fileName == null) {
+            log.info("Location of dependency chart: ${file.toURI()}")
+        }
         if (openBrowser) Desktop.getDesktop().browse(file.toURI());
 
     }
