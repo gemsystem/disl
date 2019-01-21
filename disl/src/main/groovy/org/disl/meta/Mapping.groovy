@@ -361,7 +361,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	List<String> getColumnsStr() {
-		getColumns().collect{"$it".toString()}
+		getColumns().collect{"$it.alias".toString()}
 	}
 
 	String getQueryColumnList() {
