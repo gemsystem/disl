@@ -59,7 +59,7 @@ class TestSetOperationMapping extends DislTestCase {
 			EXTRA as EXTRA
 		FROM
 		(
-		SELECT A,c,B,null X
+		SELECT A,C,B,null X
 		FROM
 			(
 	/*Mapping TestingMapping*/
@@ -81,10 +81,10 @@ class TestSetOperationMapping extends DislTestCase {
 		HAVING
 			min(s1.A)='xxx'
 	/*End of mapping TestingMapping*/) subquery1
-		UNION select A,null c,null B,X from (
+		UNION select A,null C,null B,X from (
 	/*Mapping FewColsMapping*/
 		SELECT
-			s1.A as A,
+			s1.A as a,
 			2 as X
 		FROM
 			PUBLIC.TESTING_TABLE s1
@@ -102,10 +102,10 @@ class TestSetOperationMapping extends DislTestCase {
 	@Test
 	void testGetSetOperationClause() {
 		assertEquals("""\
-UNION select A,null c,null B,X from (
+UNION select A,null C,null B,X from (
 	/*Mapping FewColsMapping*/
 		SELECT
-			s1.A as A,
+			s1.A as a,
 			2 as X
 		FROM
 			PUBLIC.TESTING_TABLE s1

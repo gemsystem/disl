@@ -30,10 +30,11 @@ public abstract class SetOperation {
 
 	public abstract String getSetOperationClause(List<String> allReferencedColumns);
 
-	static String getExpandedOrderedColumnList(List<String> allReferencedColumns, List<String> refferencedColumns) {
-		List<String> nullCols=allReferencedColumns.minus(refferencedColumns)
-		allReferencedColumns.collect{
-			if (nullCols.contains(it)) {
+	static String getExpandedOrderedColumnList(List<String> allReferencedColumnsUpperCased, List<String> refferencedColumns) {
+		List<String> refferencedColumnsUpperCased=refferencedColumns.collect{it.toUpperCase()}
+		List<String> nullColsUpperCased=allReferencedColumnsUpperCased.minus(refferencedColumnsUpperCased)
+		allReferencedColumnsUpperCased.collect{
+			if (nullColsUpperCased.contains(it)) {
 				return "null $it"
 			}
 			return it

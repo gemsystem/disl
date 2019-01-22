@@ -396,6 +396,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	List<String> getAllRefferencedColumns() {
 		List<String> allRefferenceColumns = sources.get(0).refferenceColumnsStr //first from sources is from
 		setOperations.each {allRefferenceColumns.addAll(it.source.getRefferenceColumnsStr())}
+		allRefferenceColumns=allRefferenceColumns.collect{it.toUpperCase()}
 		allRefferenceColumns.unique()
 		return allRefferenceColumns
 	}
