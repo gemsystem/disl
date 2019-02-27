@@ -192,6 +192,10 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		filter=condition
 	}
 
+	public void where(SqlExpression condition) {
+		where(condition.toString())
+	}
+
 	/**
 	 * Explicitly generate groupBy clause for all expression mappings.
 	 * */
