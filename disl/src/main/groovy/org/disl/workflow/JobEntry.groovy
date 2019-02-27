@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -37,10 +37,18 @@ class JobEntry implements Executable {
 	void simulate() {
 		executable.simulate()
 	}
-	
+
+	String executableToString(Executable executable) {
+		if (executable.hasProperty("name") && executable.name) {
+			return executable.name
+		} else {
+			return executable.toString()
+		}
+	}
+
 	String toString() {
 		JobMsgHelper jobMsgFormat = new JobMsgHelper()
-		return jobMsgFormat.getExecutionSummaryMessageEntry(executable.toString(), executionInfo)
+		return jobMsgFormat.getExecutionSummaryMessageEntry(executableToString(executable), executionInfo)
 	}
 	
 }
