@@ -34,6 +34,8 @@ class MssqlSchema extends PhysicalSchema {
 	int port
 	String instance
 	String domain
+	String useUnicode
+	String characterEncoding
 
 	String jdbcDriver="net.sourceforge.jtds.jdbc.Driver"
 	
@@ -45,6 +47,8 @@ class MssqlSchema extends PhysicalSchema {
 		databaseName=getSchemaProperty('databaseName')
 		instance=getSchemaProperty('instance')
 		domain=getSchemaProperty('domain')
+		useUnicode=getSchemaProperty('useUnicode')
+		characterEncoding=getSchemaProperty('characterEncoding')
 	}
 
 	public String getJdbcUrl() {
@@ -56,7 +60,15 @@ class MssqlSchema extends PhysicalSchema {
 		if (getDomain()!=null) {
 			domainElement=";domain=${getDomain()}"
 		}
-		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()};"
+		String useUnicodeElement=""
+		if (getUseUnicode()!=null) {
+			useUnicodeElement=";useUnicode=${getUseUnicode()}"
+		}
+		String characterEncodingElement=""
+		if (getCharacterEncoding()!=null) {
+			characterEncodingElement=";characterEncoding=${getCharacterEncoding()}"
+		}
+		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()}${useUnicodeElement}${characterEncodingElement}"
 		//println myUrl
 		return myUrl
 	}
