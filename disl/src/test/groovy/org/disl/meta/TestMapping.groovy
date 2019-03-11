@@ -36,6 +36,8 @@ class TestMapping extends DislTestCase {
 		TESTING_TABLE s4
 		TESTING_TABLE s5
 		TESTING_TABLE s6
+		TESTING_TABLE s7
+		TESTING_TABLE s8
 
 		ColumnMapping A=e s1.A
 		ColumnMapping c=e "C"
@@ -49,6 +51,8 @@ class TestMapping extends DislTestCase {
 			leftOuterJoin s3 on "$s2.A=$s3.A"
 			rightOuterJoin s4 on "$s2.A=$s4.A"
 			fullOuterJoin s5 on "$s2.A=$s5.A"
+			leftHashJoin s7 on "$s2.A=$s7.A"
+			innerHashJoin s8 on "$s2.A=$s8.A"
 			cartesianJoin s6
 			where "$s1.A=$s1.A"
 			groupBy()
@@ -99,6 +103,8 @@ class TestMapping extends DislTestCase {
 			LEFT OUTER JOIN PUBLIC.TESTING_TABLE s3  ON (s2.A=s3.A)
 			RIGHT OUTER JOIN PUBLIC.TESTING_TABLE s4  ON (s2.A=s4.A)
 			FULL OUTER JOIN PUBLIC.TESTING_TABLE s5  ON (s2.A=s5.A)
+			LEFT HASH JOIN PUBLIC.TESTING_TABLE s7  ON (s2.A=s7.A)
+			INNER HASH JOIN PUBLIC.TESTING_TABLE s8  ON (s2.A=s8.A)
 			CROSS JOIN PUBLIC.TESTING_TABLE s6
 		WHERE
 			s1.A=s1.A

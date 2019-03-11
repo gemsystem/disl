@@ -72,4 +72,16 @@ public abstract class Join {
 			"CROSS JOIN $source.refference"
 		}
 	}
+
+	public static class INNERHASH extends Join {
+		public String getFromClause() {
+			"INNER HASH JOIN $source.refference  ON ($condition)"
+		}
+	}
+
+	public static class LEFTHASH extends Join {
+		public String getFromClause() {
+			"LEFT HASH JOIN $source.refference  ON ($condition)"
+		}
+	}
 }

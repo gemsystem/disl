@@ -188,6 +188,18 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		source
 	}
 
+	public MappingSource innerHashJoin (MappingSource source) {
+		source.join=new Join.INNERHASH(source:source)
+		sources.add(source)
+		source
+	}
+
+	public MappingSource leftHashJoin (MappingSource source) {
+		source.join=new Join.LEFTHASH(source:source)
+		sources.add(source)
+		source
+	}
+
 	public void where(String condition) {
 		filter=condition
 	}
