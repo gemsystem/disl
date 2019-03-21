@@ -22,6 +22,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import groovy.util.logging.Slf4j
 import org.disl.meta.Perspective
+import org.disl.meta.Report
 
 import java.lang.reflect.Modifier
 
@@ -107,6 +108,17 @@ class MetaManager {
 			map.put(packageName,l)
 		}
 		l.add(className)
+	}
+
+	void addUsage(Report report) {
+		report.dependsOn.each {
+			addSourceUsage(it.class.name,report.class.name)
+			addTargetUsage(report.class.name,it.class.name)
+		}
+		report.sources.each {
+			addSourceUsage(it.class.name,report.class.name)
+			addTargetUsage(report.class.name,it.class.name)
+		}
 	}
 
 	void addUsage(Mapping mapping) {

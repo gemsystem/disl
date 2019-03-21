@@ -70,7 +70,10 @@ import java.lang.reflect.Field
 		//Hence foreign keys may build circular dependencies in DISL data model, foreign key target table may not be fully initialized.
 		Table targetTable=MetaFactory.newInstance(foreignKey.targetTable())
 		targetTable.initColumns()
-		
+		targetTable.initPattern() //wiki needs to have pattern and other params initialized
+		targetTable.initDescription()
+		targetTable.initName()
+
 		table.getForeignKeys().add new ForeignKeyMeta(
 			name: foreignKey.name(),
 			sourceColumn: column==null ? foreignKey.sourceColumn() : column.name,

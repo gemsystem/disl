@@ -16,24 +16,41 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.util.wiki.visjs
+package org.disl.util.wiki
 
-import org.disl.meta.MappingSource
 import org.disl.meta.Report
+import org.disl.meta.Table
+import org.disl.pattern.FileOutputStep
 
 /**
- * Representation of vis.js network lienage Node.
+ * Generate markdown wiki page file with Table documentation.
  */
-class LineageNode extends Node {
-    int level
+class ReportPageStep extends FileOutputStep {
 
-    LineageNode(MappingSource m, int level) {
-        super(m)
-        this.level=level
+    Report report
+
+    @Override
+    File getFile() {
+        return WikiHelper.getWikiPageFile(report)
     }
 
-    LineageNode(Report r, int level) {
-        super(r)
-        this.level=level
+    @Override
+    String getCharset() {
+        'utf-8'
     }
+
+    @Override
+    public String getCode() {
+        """\
++++
+    title= "${report.name}"
+    packages=["${report.getClass().getPackage().getName().replace('.','/')}"]
+    schemas=["${report.getSchema()}"]
++++
+${WikiHelper.renderElementDescription(report)}
+
+
+${WikiHelper.renderDataLineage(report)}
+"""	}
+
 }

@@ -38,13 +38,13 @@ abstract class TableMappingMaterialized extends TableMapping {
     List<String> notNullColumns;
 
     @Override
-    protected void initDescription() {
+    void initDescription() {
         super.initDescription()
         initPrimaryKey()
         initNotNull()
     }
 
-    protected void initPrimaryKey() {
+    void initPrimaryKey() {
         getFieldsByType(ColumnMapping).each {
             PrimaryKey primaryKey = it.getAnnotation(PrimaryKey)
             if (primaryKey) {
@@ -54,7 +54,7 @@ abstract class TableMappingMaterialized extends TableMapping {
         }
     }
 
-    protected void initNotNull() {
+    void initNotNull() {
         getFieldsByType(ColumnMapping).each {
             NotNull notNull = it.getAnnotation(NotNull)
             if (notNull) {

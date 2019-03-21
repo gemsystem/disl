@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2017 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2019 Antonin Krotky <antoninkrotky@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -16,24 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.util.wiki.visjs
+package org.disl.util.wiki
 
-import org.disl.meta.MappingSource
+import groovy.json.JsonBuilder
 import org.disl.meta.Report
+import org.disl.meta.Table
+import org.disl.pattern.FileOutputStep
+import org.disl.util.wiki.visjs.MappingLineageNetwork
 
 /**
- * Representation of vis.js network lienage Node.
+ * Create file containg tadle data lineage in JSON format for vis.js network visualisation.
  */
-class LineageNode extends Node {
-    int level
+class ReportLineageDataStep extends FileOutputStep {
 
-    LineageNode(MappingSource m, int level) {
-        super(m)
-        this.level=level
+    Report report
+
+    @Override
+    File getFile() {
+        return WikiHelper.getLineageDataFile(report.class.name)
     }
 
-    LineageNode(Report r, int level) {
-        super(r)
-        this.level=level
+    @Override
+    String getCode() {
+        new JsonBuilder(new MappingLineageNetwork(report)).toPrettyString()
     }
 }

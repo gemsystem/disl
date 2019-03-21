@@ -41,7 +41,7 @@ abstract class Base implements Comparable<Base>,Initializable {
 		initDependsOn()
 	}
 
-	protected void initDescription() {
+	void initDescription() {
 		Description desc=this.getClass().getAnnotation(Description)
 		if (desc) {
 			setDescription(desc.value())

@@ -20,6 +20,7 @@ package org.disl.util.wiki.visjs
 
 import org.disl.meta.ForeignKeyMeta
 import org.disl.meta.MappingSource
+import org.disl.meta.Report
 import org.disl.meta.Table
 
 /**
@@ -37,25 +38,34 @@ class Edge {
 
     static Edge foreignKey(Table table, ForeignKeyMeta fk) {
         new Edge(
-                to: fk.targetTable.class.name.replace("\$",""),
-                from: table.class.name.replace("\$",""),
+                to: fk.targetTable.class.name.replace("\$", ""),
+                from: table.class.name.replace("\$", ""),
                 label: fk.name,
                 title: "${fk.sourceColumns}=${fk.targetColumns}")
     }
 
     static Edge mappingSource(MappingSource src, MappingSource target) {
         new Edge(
-                from: src.class.name.replace("\$",""),
-                to: target.class.name.replace("\$",""),
+                from: src.class.name.replace("\$", ""),
+                to: target.class.name.replace("\$", ""),
                 label: src.sourceAlias,
-                title: (src.join?src.join.condition:null)
+                title: (src.join ? src.join.condition : null)
+        )
+    }
+
+    static Edge mappingSource(MappingSource src, Report target) {
+        new Edge(
+                from: src.class.name.replace("\$", ""),
+                to: target.class.name.replace("\$", ""),
+                label: (src.sourceAlias ? src.sourceAlias : ""),
+                title: (src.join ? src.join.condition : null)
         )
     }
 
     static Edge mappingTarget(MappingSource src, MappingSource target) {
         new Edge(
-                to: target.class.name.replace("\$",""),
-                from: src.class.name.replace("\$",""),
+                to: target.class.name.replace("\$", ""),
+                from: src.class.name.replace("\$", ""),
                 label: 'target',
                 color: 'red'
         )

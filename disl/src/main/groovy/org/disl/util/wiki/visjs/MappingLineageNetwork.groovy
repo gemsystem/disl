@@ -18,10 +18,7 @@
  */
 package org.disl.util.wiki.visjs
 
-import org.disl.meta.Lookup
-import org.disl.meta.Mapping
-import org.disl.meta.Table
-import org.disl.meta.TableMapping
+import org.disl.meta.*
 import org.disl.util.wiki.visjs.Edge
 import org.disl.util.wiki.visjs.LineageNode
 import org.disl.util.wiki.visjs.Node
@@ -36,34 +33,38 @@ class MappingLineageNetwork {
     List<Edge> edges = [];
 
     MappingLineageNetwork(Table table) {
-        initLineage(table,1)
+        initLineage(table, 1)
     }
 
     MappingLineageNetwork(Mapping mapping) {
         if (mapping instanceof TableMapping) {
-            Node target=new LineageNode(mapping.target,0)
+            Node target = new LineageNode(mapping.target, 0)
             nodes.add target
             edges.add Edge.mappingTarget(mapping, mapping.target)
         }
-        initLineage(mapping,1)
+        initLineage(mapping, 1)
+    }
+
+    MappingLineageNetwork(Report report) {
+        initLineage(report, 1)
     }
 
     boolean initLineage(Mapping mapping, int depth) {
         if (depth > maxDepth) {
             return false
         }
-        Node node = new LineageNode(mapping,depth)
+        Node node = new LineageNode(mapping, depth)
         if (depth == 1) {
             node.color = 'Red'
         }
         mapping.sources.each {
             edges.add Edge.mappingSource(it, mapping)
-            initLineage(it,depth+1)
+            initLineage(it, depth + 1)
         }
 
         mapping.setOperations.each {
             edges.add Edge.mappingSource(it.getSource(), mapping)
-            initLineage(it.getSource(),depth+1)
+            initLineage(it.getSource(), depth + 1)
         }
         return nodes.add(node)
     }
@@ -72,7 +73,7 @@ class MappingLineageNetwork {
         if (depth > maxDepth) {
             return false
         }
-        return nodes.add(new LineageNode(table,depth))
+        return nodes.add(new LineageNode(table, depth))
 
     }
 
@@ -80,7 +81,23 @@ class MappingLineageNetwork {
         if (depth > maxDepth) {
             return false
         }
-        return nodes.add(new LineageNode(lookup,depth))
+        return nodes.add(new LineageNode(lookup, depth))
+
+    }
+
+    boolean initLineage(Report report, int depth) {
+        if (depth > maxDepth) {
+            return false
+        }
+        report.dependsOn.each {
+            def src = MetaFactory.create(it)
+            edges.add Edge.mappingSource(src, report)
+            initLineage(src, depth + 1)
+        }
+        report.sources.each {
+            edges.add Edge.mappingSource(it, report)
+            initLineage(it, depth + 1)        }
+        return nodes.add(new LineageNode(report, depth))
 
     }
 

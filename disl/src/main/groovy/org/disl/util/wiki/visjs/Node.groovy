@@ -20,6 +20,7 @@ package org.disl.util.wiki.visjs
 
 import org.disl.meta.Lookup
 import org.disl.meta.Mapping
+import org.disl.meta.Report
 import org.disl.meta.Table
 import org.disl.util.wiki.WikiHelper
 
@@ -76,6 +77,15 @@ class Node {
         color = 'DarkGreen'
         shape = 'ellipse'
         targetUrl = WikiHelper.url(l)
+    }
+
+    Node(Report r) {
+        id = r.class.name.replace("\$","")
+        label = r.name
+        title = r.description
+        color = 'Magenta'
+        shape = 'star'
+        targetUrl = WikiHelper.url(r)
     }
 
     @Override
