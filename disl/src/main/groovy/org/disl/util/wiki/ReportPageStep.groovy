@@ -47,6 +47,9 @@ class ReportPageStep extends FileOutputStep {
     packages=["${report.getClass().getPackage().getName().replace('.','/')}"]
     schemas=["${report.getSchema()}"]
 +++
+
+## ${report.getSchema()}
+
 ${WikiHelper.renderElementDescription(report)}
 
 
