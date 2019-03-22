@@ -35,7 +35,7 @@ class TestSetOperationMapping extends DislTestCase {
 		FewColsMapping subquery2
 
 		ColumnMapping A=e "$subquery1.A"
-		ColumnMapping c=e "C"
+		ColumnMapping c_renamed=e "C"
 		ColumnMapping B=e "$subquery1.B"
 		ColumnMapping EXTRA= e"EXTRA"
 
@@ -54,7 +54,7 @@ class TestSetOperationMapping extends DislTestCase {
 	/*Mapping TestingSetOperationMapping*/
 		SELECT
 			subquery1.A as A,
-			C as c,
+			C as c_renamed,
 			subquery1.B as B,
 			EXTRA as EXTRA
 		FROM

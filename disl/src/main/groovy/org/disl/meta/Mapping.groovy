@@ -353,7 +353,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 			${getQueryColumnList()}
 		FROM
 		(
-		SELECT ${SetOperation.getExpandedOrderedColumnList(getAllRefferencedColumns(),getColumnsStr())}
+		SELECT ${SetOperation.getExpandedOrderedColumnList(getAllRefferencedColumns(),getSources().get(0).getColumnsStr())}
 		FROM
 			${getSources().collect({it.fromClause}).join("\n			")}
 		${getSetOperationClause()}
