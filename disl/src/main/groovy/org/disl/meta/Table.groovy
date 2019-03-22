@@ -217,4 +217,9 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		String rightParenthesisTableName=Context.getContext().getProperty('rightParenthesisTableName')
 		"${leftParenthesisTableName?:''}${nameWithoutParenthesis}${rightParenthesisTableName?:''}"
 	}
+
+	List<String> getColumnsStr() {
+		getColumns().collect{"$it.name".toString()}
+	}
+
 }
