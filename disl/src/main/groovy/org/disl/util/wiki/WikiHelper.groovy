@@ -320,7 +320,7 @@ class WikiHelper extends MetaManager {
             if (base.description.contains('.')) {
                 return base.description.replaceFirst('\\.','.\n<!--more-->\n')
             }
-            return "${base.description}\n<!--more-->\n"
+            return "```\n${base.description}\n```\n<!--more-->\n"
         }
         return '<!--more-->'
     }
