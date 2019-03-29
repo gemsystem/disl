@@ -52,7 +52,7 @@ class Node {
                     color = 'LightBlue'
                     break
                 case 'fact':
-                    color = 'Yellow'
+                    color = 'Orange'
                     break
             }
         } catch (MissingPropertyException e) {
