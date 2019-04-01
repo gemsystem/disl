@@ -317,10 +317,11 @@ class WikiHelper extends MetaManager {
 
     static String renderElementDescription(Base base) {
         if (base.description && !'null'.equals(base.description)) {
-            if (base.description.contains('.')) {
-                return base.description.replaceFirst('\\.','.\n<!--more-->\n')
+            if (base.description.startsWith("[MD]")) {
+                "${base.description.replaceFirst("\\[MD\\]","")}\n<!--more-->\n"
+            } else {
+                return "```\n${base.description}\n```\n<!--more-->\n"
             }
-            return "```\n${base.description}\n```\n<!--more-->\n"
         }
         return '<!--more-->'
     }
