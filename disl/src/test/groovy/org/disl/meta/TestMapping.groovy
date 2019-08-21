@@ -22,6 +22,7 @@ import static org.disl.meta.TestLibrary.*
 import static org.junit.Assert.*
 
 import org.disl.meta.TestTable.TESTING_TABLE
+import org.disl.meta.TestTable.TESTING_TABLE_XML
 import org.disl.test.DislTestCase
 import org.junit.Test
 
@@ -38,6 +39,7 @@ class TestMapping extends DislTestCase {
 		TESTING_TABLE s6
 		TESTING_TABLE s7
 		TESTING_TABLE s8
+		TESTING_TABLE_XML s9
 
 		ColumnMapping A=e s1.A
 		ColumnMapping c=e "C"
@@ -54,6 +56,7 @@ class TestMapping extends DislTestCase {
 			leftHashJoin s7 on "$s2.A=$s7.A"
 			innerHashJoin s8 on "$s2.A=$s8.A"
 			cartesianJoin s6
+			crossApply s9
 			where "$s1.A=$s1.A"
 			groupBy()
 			having "min($s1.A)='xxx'"
@@ -106,6 +109,7 @@ class TestMapping extends DislTestCase {
 			LEFT HASH JOIN PUBLIC.TESTING_TABLE s7  ON (s2.A=s7.A)
 			INNER HASH JOIN PUBLIC.TESTING_TABLE s8  ON (s2.A=s8.A)
 			CROSS JOIN PUBLIC.TESTING_TABLE s6
+			CROSS APPLY Any XML Join Can Be Here
 		WHERE
 			s1.A=s1.A
 		GROUP BY

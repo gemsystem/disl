@@ -84,4 +84,10 @@ public abstract class Join {
 			"LEFT HASH JOIN $source.refference  ON ($condition)"
 		}
 	}
+
+	public static class CROSSAPPLY extends Join{
+		public String getFromClause() {
+			"CROSS APPLY $source.refference"
+		}
+	}
 }

@@ -75,6 +75,15 @@ class TestTable {
 	def DUMMY
 	
 	}
+
+	static class TESTING_TABLE_XML extends Table {
+		@Override
+		public String getRefference() {
+			"""Any XML Join Can Be Here"""
+		}
+		@Override
+		TablePattern getPattern() {}
+	}
 	
 	TESTING_TABLE table
 	

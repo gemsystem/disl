@@ -200,6 +200,12 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		source
 	}
 
+	public MappingSource crossApply (MappingSource source) {
+		source.join=new Join.CROSSAPPLY(source:source)
+		sources.add(source)
+		source
+	}
+
 	public void where(String condition) {
 		filter=condition
 	}
