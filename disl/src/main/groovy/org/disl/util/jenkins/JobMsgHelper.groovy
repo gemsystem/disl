@@ -20,6 +20,7 @@ package org.disl.util.jenkins
 
 import org.disl.pattern.ExecutionInfo
 import org.disl.workflow.JobEntry
+import org.disl.meta.Context
 
 /**
  * Job Message Creator.
@@ -38,7 +39,7 @@ class JobMsgHelper {
 	}
 
 	String getExecutionSummaryMessage(String jobName, ExecutionInfo executionInfo, List<JobEntry> jobEntries) {
-		String name = jobName.padRight(50).toString().substring(0, 50)
+		String name = jobName.concat(""" (ctx:${Context.getContextName()},execMode:${Context.getContext().getExecutionMode()})""").padRight(50).toString().substring(0, 50)
 		String dur = getDuration(executionInfo)
 		String durH = getDurationHour(executionInfo)
 		String stat = getStatus(executionInfo)

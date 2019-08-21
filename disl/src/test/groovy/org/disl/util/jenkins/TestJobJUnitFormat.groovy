@@ -18,6 +18,7 @@
  */
 package org.disl.util.jenkins
 
+import org.disl.meta.Context
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestTable
 import org.disl.pattern.ExecutionInfo
@@ -80,11 +81,11 @@ class TestJobJUnitFormat extends DislTestCase {
         String expected="""\
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuite>
-\t<testcase name="executionSummary" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.!Summary" time="0"><system-out><![CDATA[ Execution results for SampleJob                                         :
+\t<testcase name="executionSummary" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.!Summary" time="0"><system-out><![CDATA[ Execution results for SampleJob (ctx:disl-test,execMode:default)        :
 ************************************************************************************************************
 * Name                                               *   Status   *  Time (ms) *     Time     *       Rows *
 ************************************************************************************************************
-* SampleJob                                          *      ERROR *       5000 * 00:00:05.000 *          0 *
+* SampleJob (ctx:disl-test,execMode:default)         *      ERROR *       5000 * 00:00:05.000 *          0 *
 ************************************************************************************************************
 * SampleExecutable1                                  *   FINISHED *       2000 * 00:00:02.000 *          2 *
 * SampleExecutable2                                  *   FINISHED *       2000 * 00:00:02.000 *          1 *
