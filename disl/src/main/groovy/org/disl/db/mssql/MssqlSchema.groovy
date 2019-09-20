@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -36,6 +36,7 @@ class MssqlSchema extends PhysicalSchema {
 	String domain
 	String useUnicode
 	String characterEncoding
+	String multiSubnetFailover
 
 	String jdbcDriver="net.sourceforge.jtds.jdbc.Driver"
 	
@@ -49,6 +50,7 @@ class MssqlSchema extends PhysicalSchema {
 		domain=getSchemaProperty('domain')
 		useUnicode=getSchemaProperty('useUnicode')
 		characterEncoding=getSchemaProperty('characterEncoding')
+		multiSubnetFailover=getSchemaProperty('MultiSubnetFailover')
 	}
 
 	public String getJdbcUrl() {
@@ -68,7 +70,11 @@ class MssqlSchema extends PhysicalSchema {
 		if (getCharacterEncoding()!=null) {
 			characterEncodingElement=";characterEncoding=${getCharacterEncoding()}"
 		}
-		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()}${useUnicodeElement}${characterEncodingElement}"
+		String multiSubnetFailoverElement=""
+		if (getMultiSubnetFailover()!=null) {
+			multiSubnetFailoverElement=";MultiSubnetFailover=${getMultiSubnetFailover()}"
+		}
+		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()}${useUnicodeElement}${characterEncodingElement}${multiSubnetFailoverElement}"
 		//println myUrl
 		return myUrl
 	}
