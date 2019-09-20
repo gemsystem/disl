@@ -26,6 +26,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class Report extends Base {
 	String schema = "report"
+	String wikiGroup = ""
 
 	List<MappingSource> sources=[]
 

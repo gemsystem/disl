@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2017 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2017 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -46,6 +46,8 @@ class ReportPageStep extends FileOutputStep {
     title= "${report.name}"
     packages=["${report.getClass().getPackage().getName().replace('.','/')}"]
     schemas=["${report.getSchema()}"]
+    tags=["report"]
+    group="${report.wikiGroup}"
 +++
 
 ## ${report.getSchema()}
