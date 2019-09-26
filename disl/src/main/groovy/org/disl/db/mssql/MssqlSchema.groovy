@@ -37,6 +37,7 @@ class MssqlSchema extends PhysicalSchema {
 	String useUnicode
 	String characterEncoding
 	String multiSubnetFailover
+	String integratedSecurity
 
 	String jdbcDriver="net.sourceforge.jtds.jdbc.Driver"
 	
@@ -50,7 +51,8 @@ class MssqlSchema extends PhysicalSchema {
 		domain=getSchemaProperty('domain')
 		useUnicode=getSchemaProperty('useUnicode')
 		characterEncoding=getSchemaProperty('characterEncoding')
-		multiSubnetFailover=getSchemaProperty('MultiSubnetFailover')
+		multiSubnetFailover=getSchemaProperty('multiSubnetFailover')
+		integratedSecurity=getSchemaProperty('integratedSecurity')
 	}
 
 	public String getJdbcUrl() {
@@ -72,9 +74,13 @@ class MssqlSchema extends PhysicalSchema {
 		}
 		String multiSubnetFailoverElement=""
 		if (getMultiSubnetFailover()!=null) {
-			multiSubnetFailoverElement=";MultiSubnetFailover=${getMultiSubnetFailover()}"
+			multiSubnetFailoverElement=";multiSubnetFailover=${getMultiSubnetFailover()}"
 		}
-		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()}${useUnicodeElement}${characterEncodingElement}${multiSubnetFailoverElement}"
+		String integratedSecurity=""
+		if (getMultiSubnetFailover()!=null) {
+			integratedSecurity=";integratedSecurity=${getIntegratedSecurity()}"
+		}
+		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()}${useUnicodeElement}${characterEncodingElement}${multiSubnetFailoverElement}${getIntegratedSecurity()}"
 		//println myUrl
 		return myUrl
 	}
