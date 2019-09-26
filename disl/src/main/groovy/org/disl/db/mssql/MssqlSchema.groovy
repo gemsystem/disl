@@ -56,6 +56,14 @@ class MssqlSchema extends PhysicalSchema {
 	}
 
 	public String getJdbcUrl() {
+        String userElement = ""
+        if (!(getIntegratedSecurity()!=null && getIntegratedSecurity().equalsIgnoreCase("true"))) {
+            userElement=";user=${getUser()}"
+        }
+        String passwordElement=""
+        if (!(getIntegratedSecurity()!=null && getIntegratedSecurity().equalsIgnoreCase("true"))) {
+            passwordElement=";password=${getPassword()}"
+        }
 		String instanceElement=""
 		if (getInstance()!=null) {
 			instanceElement=";instance=${getInstance()}"
@@ -76,11 +84,11 @@ class MssqlSchema extends PhysicalSchema {
 		if (getMultiSubnetFailover()!=null) {
 			multiSubnetFailoverElement=";multiSubnetFailover=${getMultiSubnetFailover()}"
 		}
-		String integratedSecurity=""
-		if (getMultiSubnetFailover()!=null) {
-			integratedSecurity=";integratedSecurity=${getIntegratedSecurity()}"
+		String integratedSecurityElement=""
+		if (getIntegratedSecurity()!=null) {
+            integratedSecurityElement=";integratedSecurity=${getIntegratedSecurity()}"
 		}
-		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement};user=${getUser()};password=${getPassword()}${useUnicodeElement}${characterEncodingElement}${multiSubnetFailoverElement}${getIntegratedSecurity()}"
+		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement}${userElement}${passwordElement}${useUnicodeElement}${characterEncodingElement}${multiSubnetFailoverElement}${integratedSecurityElement}"
 		//println myUrl
 		return myUrl
 	}
