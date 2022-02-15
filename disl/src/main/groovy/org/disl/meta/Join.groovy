@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -82,6 +82,12 @@ public abstract class Join {
 	public static class LEFTHASH extends Join {
 		public String getFromClause() {
 			"LEFT HASH JOIN $source.refference  ON ($condition)"
+		}
+	}
+
+	public static class FULLHASH extends Join {
+		public String getFromClause() {
+			"FULL HASH JOIN $source.refference ON ($condition)"
 		}
 	}
 

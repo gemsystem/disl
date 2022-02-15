@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -40,6 +40,7 @@ class TestMapping extends DislTestCase {
 		TESTING_TABLE s7
 		TESTING_TABLE s8
 		TESTING_TABLE_XML s9
+		TESTING_TABLE s10
 
 		ColumnMapping A=e s1.A
 		ColumnMapping c=e "C"
@@ -55,6 +56,7 @@ class TestMapping extends DislTestCase {
 			fullOuterJoin s5 on "$s2.A=$s5.A"
 			leftHashJoin s7 on "$s2.A=$s7.A"
 			innerHashJoin s8 on "$s2.A=$s8.A"
+			fullHashJoin s10 on "$s2.A=$s10.A"
 			cartesianJoin s6
 			crossApply s9
 			where "$s1.A=$s1.A"
@@ -108,6 +110,7 @@ class TestMapping extends DislTestCase {
 			FULL OUTER JOIN PUBLIC.TESTING_TABLE s5  ON (s2.A=s5.A)
 			LEFT HASH JOIN PUBLIC.TESTING_TABLE s7  ON (s2.A=s7.A)
 			INNER HASH JOIN PUBLIC.TESTING_TABLE s8  ON (s2.A=s8.A)
+			FULL HASH JOIN PUBLIC.TESTING_TABLE s10 ON (s2.A=s10.A)
 			CROSS JOIN PUBLIC.TESTING_TABLE s6
 			CROSS APPLY Any XML Join Can Be Here
 		WHERE

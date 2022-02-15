@@ -10,12 +10,15 @@ apply plugin: 'signing'
 
 
 project.group = 'com.github.gemsystem'
-project.version = "1.3.10-SNAPSHOT"
+project.version = "1.3.11-SNAPSHOT"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-repositories { mavenCentral() }
+repositories {
+    //mavenLocal()
+    mavenCentral()
+}
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.12'

@@ -200,6 +200,12 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		source
 	}
 
+	public MappingSource fullHashJoin (MappingSource source) {
+		source.join=new Join.FULLHASH(source:source)
+		sources.add(source)
+		source
+	}
+
 	public MappingSource crossApply (MappingSource source) {
 		source.join=new Join.CROSSAPPLY(source:source)
 		sources.add(source)
