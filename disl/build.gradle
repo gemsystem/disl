@@ -1,32 +1,30 @@
 plugins {
-    id "com.github.hierynomus.license" version "0.11.0"
+    id "com.github.hierynomus.license" version "$hierynomusLicenseVersion"
+    id "maven-publish"
+    id "signing"
+    id "groovy"
+    id "eclipse"
+    id "java-library-distribution"
 }
 
-apply plugin: 'eclipse'
-apply plugin: 'groovy'
-apply plugin: 'java-library-distribution'
-apply plugin: 'maven'
-apply plugin: 'signing'
-
-
 project.group = 'com.github.gemsystem'
-project.version = "1.3.11-SNAPSHOT"
+project.version = "1.4.0-SNAPSHOT"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
-    //mavenLocal()
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.12'
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    compile 'junit:junit:4.12'
-    testCompile 'org.hsqldb:hsqldb:2.3.2'
-    testRuntime 'org.slf4j:slf4j-simple:1.7.21'
-    testRuntime fileTree(dir: 'lib', include: '*.jar')
+    implementation "org.codehaus.groovy:groovy-all:$groovyVersion"
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    implementation "junit:junit:$junitVersion"
+    testImplementation "org.hsqldb:hsqldb:$hsqldbVersion"
+    testRuntimeOnly "org.slf4j:slf4j-simple:$slf4jVersion"
+    testRuntimeOnly fileTree(dir: 'lib', include: '*.jar')
 }
 
 license {
@@ -60,45 +58,47 @@ signing {
     }
 }
 
-uploadArchives {
-    repositories {
-        //set gemMavenUserPublish and gemMavenPasswordPublish in ~/.gradle/gradle.properties
-        mavenDeployer {
-            snapshotRepository(url: "http://maven.gem.local/nexus/content/repositories/snapshots/") {
-                authentication(userName: gemMavenUserPublish, password: gemMavenPasswordPublish)
-            }
-
-            //beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            repository(url: "http://maven.gem.local/nexus/content/repositories/public/") {
-                authentication(userName: gemMavenUserPublish, password: gemMavenPasswordPublish)
-            }
-            pom.project {
-                name 'disl'
-                description 'disl = data integration specific language. Goal of this project is to implement groovy based domain specific language supporting modelling of data integration projects. Disl will support data modeling and data mapping including support for MDA transformations and unit testing.'
-                url 'https://github.com/gemsystem/disl'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'disl'
+                description = 'disl = data integration specific language. Goal of this project is to implement groovy based domain specific language supporting modelling of data integration projects. Disl will support data modeling and data mapping including support for MDA transformations and unit testing.'
+                url = 'https://github.com/gemsystem/disl'
                 licenses {
                     license {
-                        name 'GNU GENERAL PUBLIC LICENSE, Version 3.0'
-                        url 'http://www.gnu.org/licenses/gpl.txt'
-                        distribution 'repo'
+                        name = 'GNU GENERAL PUBLIC LICENSE, Version 3.0'
+                        url = 'http://www.gnu.org/licenses/gpl.txt'
+                        distribution = 'repo'
                     }
                 }
                 developers {
                     developer {
-                        name 'GEM System a.s.'
-                        email 'sales@gemsystem.cz'
-                        organization 'GEM System a.s.'
-                        organizationUrl 'https://github.com/gemsystem'
+                        name = 'GEM System a.s.'
+                        email = 'disl@gemsystem.cz'
+                        organization = 'GEM System a.s.'
+                        organizationUrl = 'https://www.gemsystem.cz'
                     }
                 }
-                issueManagement {
-                    system 'Github'
-                    url 'https://github.com/gemsystem/disl/issues'
-                }
                 scm {
-                    connection 'scm:git:git@github.com:gemsystem/disl.git'
-                    developerConnection 'scm:git:git@github.com:gemsystem/disl.git'
-                    url 'git:git@github.com:gemsystem/disl.git'
+                    connection = 'scm:git:git@github.com:gemsystem/disl.git'
+                    developerConnection = 'scm:git:git@github.com:gemsystem/disl.git'
+                    url = 'https://github.com/gemsystem/disl'
+                }
+                issueManagement {
+                    system = 'GitHub'
+                    url = 'https://github.com/gemsystem/disl/issues'
+                }
+            }
+            repositories {
+                def releasesRepoUrl = "http://maven.gem.local/nexus/content/repositories/free/"
+                def snapshotRepoUrl = "http://maven.gem.local/nexus/content/repositories/snapshots/"
+                maven {
+                    url = version.endsWith("SNAPSHOT") ? snapshotRepoUrl : releasesRepoUrl
+                    credentials {
+                        username = gemMavenUserPublish
+                        password = gemMavenPasswordPublish
+                    }
                 }
             }
         }
