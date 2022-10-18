@@ -98,10 +98,10 @@ class TestJobJUnitFormat extends DislTestCase {
 IGNORING ERROR:
 Testing exception.
 
-java.lang.RuntimeException: Testing exception.\r
+java.lang.RuntimeException: Testing exception.
 \tat SampleClass.sampleMehtod(SampleClass.groovy:10)]]></system-out><skipped/></testcase>
 \t<testcase name="2_Step2" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.2_SampleExecutable2" time="1"><system-out><![CDATA[Step2 code.]]></system-out></testcase>
-\t<testcase name="1_Step1" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.3_SampleExecutable3" time="1"><system-out><![CDATA[Step1 code.]]></system-out><system-err><![CDATA[java.lang.RuntimeException: Testing exception.\r
+\t<testcase name="1_Step1" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.3_SampleExecutable3" time="1"><system-out><![CDATA[Step1 code.]]></system-out><system-err><![CDATA[java.lang.RuntimeException: Testing exception.
 \tat SampleClass.sampleMehtod(SampleClass.groovy:10)]]></system-err><failure message="Testing exception."></failure></testcase>
 \t<testcase name="2_Step2" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.3_SampleExecutable3" time="0"><system-out><![CDATA[Step2 code.]]></system-out><skipped/></testcase>
 </testsuite>"""
@@ -113,7 +113,7 @@ java.lang.RuntimeException: Testing exception.\r
     void testStackTrace() {
         String stackTrace=new JobJUnitFormat(job: job).formatStackTrace(job.jobEntries[1].executable.steps[0].executionInfo)
         String expected="""\
-<system-err><![CDATA[java.lang.RuntimeException: Testing exception.\r
+<system-err><![CDATA[java.lang.RuntimeException: Testing exception.
 \tat SampleClass.sampleMehtod(SampleClass.groovy:10)]]></system-err>"""
         Assert.assertEquals(expected,stackTrace)
     }
