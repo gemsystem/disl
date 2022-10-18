@@ -18,7 +18,7 @@
  */
 package org.disl.meta
 
-import static groovy.util.GroovyTestCase.*
+import static groovy.test.GroovyTestCase.*
 
 import org.disl.pattern.TablePattern
 import org.junit.Before
