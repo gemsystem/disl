@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2018 GEM System a.s. <sales@gemsystem.cz>.
+ * Copyright 2015 - 2018 GEM System a.s. <disl@gemsystem.cz>.
  *
  * This file is part of disl.
  *
