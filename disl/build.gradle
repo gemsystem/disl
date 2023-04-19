@@ -3,7 +3,6 @@ plugins {
     id "maven-publish"
     id "signing"
     id "groovy"
-    id "eclipse"
     id "java-library-distribution"
 }
 
