@@ -36,6 +36,9 @@ class Node {
     String targetUrl
     int size=25
 
+    protected Node() {
+
+    }
 
     Node(Table t) {
         id = t.class.name.replace("\$","")
