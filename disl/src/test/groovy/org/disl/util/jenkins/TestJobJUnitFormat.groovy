@@ -106,6 +106,8 @@ java.lang.RuntimeException: Testing exception.
 \t<testcase name="2_Step2" classname="org.disl.util.jenkins.TestJobJUnitFormat\$SampleJob.3_SampleExecutable3" time="0"><system-out><![CDATA[Step2 code.]]></system-out><skipped/></testcase>
 </testsuite>"""
        String result=new JobJUnitFormat(job: job).format()
+        expected = expected.replaceAll("\r\n", "\n")
+        result = result.replaceAll("\r\n", "\n")
        Assert.assertEquals(expected,result)
     }
 
@@ -115,6 +117,9 @@ java.lang.RuntimeException: Testing exception.
         String expected="""\
 <system-err><![CDATA[java.lang.RuntimeException: Testing exception.
 \tat SampleClass.sampleMehtod(SampleClass.groovy:10)]]></system-err>"""
+
+        expected = expected.replaceAll("\r\n", "\n")
+        stackTrace = stackTrace.replaceAll("\r\n", "\n")
         Assert.assertEquals(expected,stackTrace)
     }
 
