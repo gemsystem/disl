@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2018 Antonín Krotký <antoninkrotky@gmail.com>.
+ * Copyright 2015 - 2018 AntonÃ­n KrotkÃ½ <antoninkrotky@gmail.com>.
  *
  * This file is part of disl.
  *

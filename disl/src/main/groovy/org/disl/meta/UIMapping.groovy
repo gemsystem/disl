@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy
 /**
  * Defines mapping of the column to the UI form.
  *
- * @author Luk� Vlk
+ * @author Lukáš Vlk
  */
 @Retention(RetentionPolicy.RUNTIME)
 @interface UIMapping {
