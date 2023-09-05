@@ -35,6 +35,11 @@ class PentahoTransformFileStep extends FileOutputStep {
     }
 
     @Override
+    String getCharset() {
+        'utf-8'
+    }
+
+    @Override
     String getCode() {
         return """+++
 title = "Transformation: ${vo.name}"

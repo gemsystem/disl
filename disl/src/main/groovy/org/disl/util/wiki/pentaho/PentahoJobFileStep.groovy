@@ -35,6 +35,11 @@ class PentahoJobFileStep extends FileOutputStep {
     }
 
     @Override
+    String getCharset() {
+        'utf-8'
+    }
+
+    @Override
     String getCode() {
         return """+++
 title = "Job: ${vo.name}"

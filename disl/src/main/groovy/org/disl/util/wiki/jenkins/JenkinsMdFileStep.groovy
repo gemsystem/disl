@@ -35,6 +35,11 @@ class JenkinsMdFileStep extends FileOutputStep {
     }
 
     @Override
+    String getCharset() {
+        'utf-8'
+    }
+
+    @Override
     String getCode() {
         """+++
 title = "${vo.name}"

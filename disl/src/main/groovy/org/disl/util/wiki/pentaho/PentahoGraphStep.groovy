@@ -37,6 +37,11 @@ class PentahoGraphStep extends FileOutputStep {
     }
 
     @Override
+    String getCharset() {
+        'utf-8'
+    }
+
+    @Override
     String getCode() {
         new JsonBuilder(new PentahoNetwork(vo)).toPrettyString()
     }
