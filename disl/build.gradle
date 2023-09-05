@@ -7,7 +7,7 @@ plugins {
 }
 
 project.group = 'com.github.gemsystem'
-project.version = "1.4.0-SNAPSHOT"
+project.version = "1.4.1-SNAPSHOT"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -106,6 +106,7 @@ publishing {
                 def snapshotRepoUrl = "http://maven.gem.local/nexus/content/repositories/snapshots/"
                 maven {
                     url = version.endsWith("SNAPSHOT") ? snapshotRepoUrl : releasesRepoUrl
+                    allowInsecureProtocol = true
                     credentials {
                         username = gemMavenUserPublish
                         password = gemMavenPasswordPublish
