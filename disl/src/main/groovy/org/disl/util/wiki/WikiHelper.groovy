@@ -332,4 +332,12 @@ class WikiHelper extends MetaManager {
         }
         return description
     }
+
+    static String canonicalFilename(String filename) {
+        filename?.trim()
+                ?.replaceAll(" ", "_")
+                ?.replaceAll("\\(", "")
+                ?.replaceAll("\\)", "")
+                ?.toLowerCase()
+    }
 }
