@@ -72,7 +72,7 @@ class MetaManager {
 	@CompileStatic(TypeCheckingMode.SKIP)
 	void process(Closure closure) {
 		dislClasses.each {
-			log.info("Processing ${it.name}.")
+			log.debug("Processing ${it.name}.")
 			Class<Base> modelElement=it
 			String packageName=modelElement.getPackage().getName()
 			try {
