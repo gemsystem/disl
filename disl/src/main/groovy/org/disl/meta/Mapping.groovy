@@ -39,7 +39,7 @@ import org.disl.pattern.MappingPattern
  * This class implements early initialization for all fields of types assignable from MappingSource.
  * This enables to reference MappingSources in initializers of ColumnMapping fields.
  * */
-abstract class Mapping  extends MappingSource implements Initializable,Executable {
+abstract class Mapping extends MappingSource implements Initializable,Executable {
 	/**
 	 * Since this is first field in this class definition, it ensures doEarlyInit() method is called before next fields are intialized.
 	 * */
@@ -52,6 +52,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	List<MappingSource> sources=[]
 	List<SetOperation> setOperations=[]
 	String filter="1=1"
+	String unpivot
 
 	public boolean isEarlyInitialized() {
 		return earlyInitialized
@@ -277,6 +278,10 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 
 	public void orderBy(String clause) {
 		orderBy=clause
+	}
+
+	void unpivot(ColumnMapping valueColumn, ColumnMapping pivotColumn, Collection<ColumnMapping> pivotColumns) {
+		throw UnsupportedOperationException("unpivot is unsupported")
 	}
 
 	public void union(Mapping source) {
