@@ -25,7 +25,7 @@ import org.junit.Test
 
 /**
  *
- * @author Luk� Vlk
+ * @author Lukáš Vlk
  */
 class TestUIMapping extends DislTestCase {
 
