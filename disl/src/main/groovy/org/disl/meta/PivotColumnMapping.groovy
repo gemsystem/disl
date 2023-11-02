@@ -30,7 +30,11 @@ class PivotColumnMapping extends ColumnMapping {
 
     @Override
     String getAliasedMappingExpression() {
-        "$alias"
+        if (expression) {
+            super.getAliasedMappingExpression()
+        } else {
+            "$alias"
+        }
     }
 
 }

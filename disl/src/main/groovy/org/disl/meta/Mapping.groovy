@@ -381,8 +381,8 @@ abstract class Mapping extends MappingSource implements Initializable,Executable
 		a(aggregateFunction.toString())
 	}
 
-	ColumnMapping p() {
-		def columnMapping = new PivotColumnMapping(parent: this)
+	ColumnMapping p(String pivotValue = null) {
+		def columnMapping = new PivotColumnMapping(expression: pivotValue, parent: this)
 		columns.add(columnMapping)
 		pivotColumns.add(columnMapping)
 		columnMapping
@@ -454,6 +454,14 @@ abstract class Mapping extends MappingSource implements Initializable,Executable
 			${orderBy}"""
 		}
 		return ""
+	}
+
+	String getPivotClause() {
+		pivot ?: ""
+	}
+
+	String getUnpivotClause() {
+		unpivot ?: ""
 	}
 
 	List<String> getAllRefferencedColumns() {

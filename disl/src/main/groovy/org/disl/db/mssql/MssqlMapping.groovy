@@ -66,7 +66,7 @@ abstract class MssqlMapping extends Mapping {
 		(
 			${aggregatePivotColumnMapping} 
 			for ${pivotFor} in ( 
-				${pivotColumns.collect {it.alias}.join(",\n\t\t\t\t")})
+				${pivotColumns.collect { it.expression ?: it.alias }.join(",\n\t\t\t\t")})
 		) pvt
 		"""
     }
@@ -79,14 +79,6 @@ abstract class MssqlMapping extends Mapping {
 				${pivotColumns.collect {it.alias}.join(",\n\t\t\t\t")})
 		) unpvt
 		"""
-    }
-
-    String getPivotClause() {
-        pivot ?: ""
-    }
-
-    String getUnpivotClause() {
-        unpivot ?: ""
     }
 
 }
