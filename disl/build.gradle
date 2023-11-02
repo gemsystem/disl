@@ -9,9 +9,6 @@ plugins {
 project.group = 'com.github.gemsystem'
 project.version = "1.4.4-SNAPSHOT"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -30,6 +27,11 @@ license {
     header rootProject.file('HEADER.txt')
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     skipExistingHeaders = true
+}
+
+java {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
