@@ -53,12 +53,22 @@ abstract class MssqlMapping extends Mapping {
 			${getQueryColumnList()}
 		FROM
 			${getSources().collect({it.fromClause}).join("\n			")}
-		${getUnpivot()}
-		WHERE
+		${getPivotClause()}${getUnpivotClause()}WHERE
 			${filter}
 		${getGroupByClause()}${getHavingClause()}${getOrderByClause()}${getSetOperationClause()}
 	/*End of mapping $name*/"""
         }
+    }
+
+    @Override
+    void pivot(String aggregatePivotColumnMapping, String pivotFor) {
+        pivot = """PIVOT
+		(
+			${aggregatePivotColumnMapping} 
+			for ${pivotFor} in ( 
+				${pivotColumns.collect {it.alias}.join(",\n\t\t\t\t")})
+		) pvt
+		"""
     }
 
     @Override
@@ -67,16 +77,16 @@ abstract class MssqlMapping extends Mapping {
 		(
 			${valueColumn.alias} for ${pivotColumn.alias} in ( 
 				${pivotColumns.collect {it.alias}.join(",\n\t\t\t\t")})
-		) unpvt"""
+		) unpvt
+		"""
+    }
+
+    String getPivotClause() {
+        pivot ?: ""
     }
 
     String getUnpivotClause() {
-        if (!unpivot) {
-            unpivot
-        } else {
-            ""
-        }
-
+        unpivot ?: ""
     }
 
 }

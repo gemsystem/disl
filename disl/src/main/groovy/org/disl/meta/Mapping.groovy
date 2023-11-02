@@ -52,7 +52,21 @@ abstract class Mapping extends MappingSource implements Initializable,Executable
 	List<MappingSource> sources=[]
 	List<SetOperation> setOperations=[]
 	String filter="1=1"
+
+	/**
+	 * Unpivot clause.
+	 */
 	String unpivot
+
+	/**
+	 * Pivot clause.
+	 */
+	String pivot
+
+	/**
+	 * List of columns that is using in the pivot clause.
+	 */
+	List<ColumnMapping> pivotColumns=[]
 
 	public boolean isEarlyInitialized() {
 		return earlyInitialized
@@ -280,6 +294,10 @@ abstract class Mapping extends MappingSource implements Initializable,Executable
 		orderBy=clause
 	}
 
+	void pivot(String aggregatePivotColumnMapping, String pivotFor) {
+		throw UnsupportedOperationException("pivot is unsupported")
+	}
+
 	void unpivot(ColumnMapping valueColumn, ColumnMapping pivotColumn, Collection<ColumnMapping> pivotColumns) {
 		throw UnsupportedOperationException("unpivot is unsupported")
 	}
@@ -361,6 +379,13 @@ abstract class Mapping extends MappingSource implements Initializable,Executable
 
 	ColumnMapping a(AbstractSqlExpression aggregateFunction) {
 		a(aggregateFunction.toString())
+	}
+
+	ColumnMapping p() {
+		def columnMapping = new PivotColumnMapping(parent: this)
+		columns.add(columnMapping)
+		pivotColumns.add(columnMapping)
+		columnMapping
 	}
 
 	ColumnMapping createAggregateColumnMapping(String aggregateFunction) {
