@@ -163,7 +163,10 @@ abstract class Mapping extends MappingSource implements Initializable,Executable
 	}
 
 	void initSourceAliases() {
-		getPropertyNamesByType(MappingSource).each {initSourceAlias(it)}
+		getPropertyNamesByType(MappingSource)
+		.findAll {
+			this[it] == null
+		}.each {initSourceAlias(it)}
 	}
 
 	void initSourceAlias(String property) {
