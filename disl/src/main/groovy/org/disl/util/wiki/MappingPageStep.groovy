@@ -84,17 +84,17 @@ $sources
     }
 
     String getSources() {"""\
-<H2>Sources</H2>
-<table>
-<tr><th>Alias</th><th>Name</th><th>Join type</th><th>Join condition</th></tr>
+## Sources
+
+| Alias | Name | Join type | Join condition |
+|-------|------|-----------|----------------|
 ${mapping.sources.collect {
-        "<tr><td>${it.sourceAlias}</td><td>[${it.name}](${WikiHelper.url(it)})</td><td>${it.join.class.simpleName}</td><td><pre><code>${it.join.condition}</code></pre></td></tr>\n"
-    }.join()
-    }
+        "| ${it.sourceAlias} | [${it.name}](${WikiHelper.url(it)}) | ${it.join.class.simpleName} | ```${it.join.condition}``` |"
+    }.join("\n")
+}
 ${mapping.setOperations.collect {
-        "<tr><td>${it.source.sourceAlias}</td><td>[${it.source.name}](${WikiHelper.url(it.source)})</td><td>${it.class.simpleName}</td><td></td></tr>\n"
-    }.join()}
-</table>
+        "| ${it.source.sourceAlias} | [${it.source.name}](${WikiHelper.url(it.source)}) | ${it.class.simpleName}| |"
+    }.join("\n")}
 """
     }
 }
