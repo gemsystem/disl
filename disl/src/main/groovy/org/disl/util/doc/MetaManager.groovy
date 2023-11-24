@@ -59,7 +59,7 @@ class MetaManager {
 		List<Class> classes=cf.findTypes({
 			Class type=(Class)it
 			int modifiers=type.getModifiers()
-			return includeType(type) && !Modifier.isAbstract(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalClass())
+			return includeType(type) && !Modifier.isAbstract(modifiers) && !Modifier.isPrivate(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalClass())
 		})
 		dislClasses.addAll(classes)
 		log.info("${classes.size()} DISL elements found for root package $rootPackage.")
