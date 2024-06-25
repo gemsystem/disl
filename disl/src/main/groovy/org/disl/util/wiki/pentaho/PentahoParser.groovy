@@ -53,6 +53,9 @@ class PentahoParser {
                 entry.type.toString(),
                 entry.description.toString(),
                 getExtName(entry.type.toString(),entry.jobname.toString(), entry.transname.toString(), vo),
+                entry.filename.toString(),
+                entry.transname.toString(),
+                entry.directory.toString()
             )
         }.findAll {
             it != null

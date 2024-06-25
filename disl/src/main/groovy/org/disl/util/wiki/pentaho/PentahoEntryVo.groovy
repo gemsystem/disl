@@ -45,10 +45,36 @@ class PentahoEntryVo {
      */
     String extName
 
+    /**
+     * Filename
+     */
+    String filename
+
+    /**
+     * Transname
+     */
+    String transname
+
+    /**
+     * Directory
+     */
+    String directory
+
     PentahoEntryVo(String name, String type, String description, String extName) {
         this.name = name
         this.type = type
         this.description = description
         this.extName = extName
     }
+
+    PentahoEntryVo(String name, String type, String description, String extName, String filename, String transname, String directory) {
+        this.name = name
+        this.type = type
+        this.description = description
+        this.extName = extName
+        this.filename = filename
+        this.transname = transname
+        this.directory = directory
+    }
+
 }
