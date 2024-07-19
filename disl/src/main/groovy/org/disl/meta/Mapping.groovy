@@ -305,6 +305,10 @@ abstract class Mapping extends MappingSource implements Initializable,Executable
 		throw UnsupportedOperationException("unpivot is unsupported")
 	}
 
+	void unpivot(ColumnMapping valueColumn, String pivotColumn, Collection<ColumnMapping> pivotColumns) {
+		throw UnsupportedOperationException("unpivot is unsupported")
+	}
+
 	public void union(Mapping source) {
 		setOperations.add(new SetOperation.UNION(source: source))
 	}

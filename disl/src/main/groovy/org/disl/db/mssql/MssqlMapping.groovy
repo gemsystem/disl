@@ -73,12 +73,16 @@ abstract class MssqlMapping extends Mapping {
 
     @Override
     void unpivot(ColumnMapping valueColumn, ColumnMapping pivotColumn, Collection<ColumnMapping> pivotColumns) {
+        unpivot(valueColumn, pivotColumn.alias, pivotColumns)
+    }
+
+    @Override
+    void unpivot(ColumnMapping valueColumn, String pivotColumn, Collection<ColumnMapping> pivotColumns) {
         unpivot = """UNPIVOT 
 		(
-			${valueColumn.alias} for ${pivotColumn.alias} in ( 
+			${valueColumn.alias} for ${pivotColumn} in ( 
 				${pivotColumns.collect {it.alias}.join(",\n\t\t\t\t")})
 		) unpvt
 		"""
     }
-
 }
