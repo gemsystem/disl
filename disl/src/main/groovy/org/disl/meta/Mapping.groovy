@@ -535,12 +535,14 @@ abstract class Mapping extends MappingSource implements Initializable,Executable
 		}
 		l.join('\t')+'\n'
 	}
-	
-	public void copySqlQueryToClipboard() {
-		StringSelection ss = new StringSelection(getSQLQuery());
-		try {
-			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
-		} catch (Exception e) {
+
+    void copySqlQueryToClipboard() {
+		if (Context.getContextProperty("env.test.NoClipboard", "false") != "true") {
+			StringSelection ss = new StringSelection(getSQLQuery());
+			try {
+				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
+			} catch (Exception e) {
+			}
 		}
 	}
 
