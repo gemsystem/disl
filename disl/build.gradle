@@ -7,7 +7,7 @@ plugins {
 }
 
 project.group = 'com.github.gemsystem'
-project.version = "1.4.8-SNAPSHOT"
+project.version = "1.5.0-SNAPSHOT"
 
 repositories {
     mavenLocal()
@@ -30,8 +30,8 @@ license {
 }
 
 java {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -88,7 +88,7 @@ publishing {
                 developers {
                     developer {
                         name = 'GEM System a.s.'
-                        email = 'disl@gemsystem.cz'
+                        email = 'disl@gem.cz'
                         organization = 'GEM System a.s.'
                         organizationUrl = 'https://www.gemsystem.cz'
                     }
