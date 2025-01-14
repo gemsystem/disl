@@ -38,12 +38,13 @@ class MssqlSchema extends PhysicalSchema {
 	String characterEncoding
 	String multiSubnetFailover
 	String integratedSecurity
+	String encrypt
 
-	String jdbcDriver="net.sourceforge.jtds.jdbc.Driver"
+	String jdbcDriver="com.microsoft.sqlserver.jdbc.SQLServerDriver"
 	
 	@Override
 	public void init() {
-		super.init();
+		super.init()
 		host=getSchemaProperty('host')
 		port=Integer.parseInt(getSchemaProperty('port','1433'))
 		databaseName=getSchemaProperty('databaseName')
@@ -53,6 +54,7 @@ class MssqlSchema extends PhysicalSchema {
 		characterEncoding=getSchemaProperty('characterEncoding')
 		multiSubnetFailover=getSchemaProperty('multiSubnetFailover')
 		integratedSecurity=getSchemaProperty('integratedSecurity')
+		encrypt=getSchemaProperty('encrypt', 'false')
 	}
 
 	public String getJdbcUrl() {
@@ -88,7 +90,16 @@ class MssqlSchema extends PhysicalSchema {
 		if (getIntegratedSecurity()!=null) {
             integratedSecurityElement=";integratedSecurity=${getIntegratedSecurity()}"
 		}
-		String myUrl="jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()}${domainElement}${instanceElement}${userElement}${passwordElement}${useUnicodeElement}${characterEncodingElement}${multiSubnetFailoverElement}${integratedSecurityElement}"
+		String databaseNameElement = ""
+		if (getDatabaseName() != null) {
+			databaseNameElement = ";databaseName=${getDatabaseName()}"
+		}
+		String encryptElement = ""
+		if (getEncrypt() != null) {
+			encryptElement = ";encrypt=${getEncrypt()}"
+		}
+
+		String myUrl="jdbc:sqlserver://${getHost()}:${getPort()}${databaseNameElement}${encryptElement}${domainElement}${instanceElement}${userElement}${passwordElement}${useUnicodeElement}${characterEncodingElement}${multiSubnetFailoverElement}${integratedSecurityElement}"
 		//println myUrl
 		return myUrl
 	}
