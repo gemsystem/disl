@@ -143,7 +143,7 @@ class Dependency {
         HashSet<String> ret = dependencies.get(theObject)?.get(onObject)?.types
                 .findAll { !ignoreTypes.contains(it) || ignoreTypes.size() == 0 }
                 .findAll { onlyTypes.contains(it) || onlyTypes.size() == 0 }
-        return ret==null?[]:ret
+        return (ret==null)? [] : ret
 
     }
 
