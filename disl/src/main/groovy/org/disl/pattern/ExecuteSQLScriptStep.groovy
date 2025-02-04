@@ -16,21 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern;
+package org.disl.pattern
 
 import groovy.sql.Sql
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 
 import java.sql.SQLException
 
+@Slf4j
 @CompileStatic
 abstract class ExecuteSQLScriptStep extends Step {
 
 	public static final String BACKSLASH_NEW_LINE = "\\\\\n"
 	
-	String commandSeparator=";";
+	String commandSeparator=";"
 
-	abstract Sql getSql();
+	abstract Sql getSql()
 
 	public int executeInternal() {
 		try {			
@@ -64,6 +66,12 @@ abstract class ExecuteSQLScriptStep extends Step {
 	}
 	
 	protected int executeSqlStatementInternal(String sqlCommand) {
-		return getSql().executeUpdate(sqlCommand)
-	}	
+		def result = getSql().executeUpdate(sqlCommand)
+		if (result >= 0) {
+			return result
+		} else {
+			log.debug("Result: '$result', sqlCommand: $sqlCommand")
+			return 0
+		}
+	}
 }
