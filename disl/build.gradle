@@ -104,8 +104,8 @@ publishing {
                 }
             }
             repositories {
-                def releasesRepoUrl = "http://maven.gem.local/nexus/content/repositories/free/"
-                def snapshotRepoUrl = "http://maven.gem.local/nexus/content/repositories/snapshots/"
+                def releasesRepoUrl = "https://maven.gemsystem.cz/nexus/content/repository/upload/free/"
+                def snapshotRepoUrl = "https://maven.gemsystem.cz/nexus/content/repository/upload/snapshots/"
                 maven {
                     url = version.endsWith("SNAPSHOT") ? snapshotRepoUrl : releasesRepoUrl
                     allowInsecureProtocol = true
